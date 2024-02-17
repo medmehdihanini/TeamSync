@@ -12,6 +12,10 @@ export class VersionHistory extends Document{
   @Prop({ required: false })
   TimesTamp: Date;
 
+  @Prop({ required: false })
+  documentid: string;
+
+
 }
 
 export const VersionHistorySchema = SchemaFactory.createForClass(VersionHistory);

@@ -12,5 +12,11 @@ export class CollaboorationLog extends Document{
   @Prop({ required: false })
   timesstamp: Date;
 
+  @Prop({ required: false })
+  documentid: string;
+
+  @Prop({ required: false })
+  userid: string;
+
 }
 export const CollaboorationLogSchema = SchemaFactory.createForClass(CollaboorationLog);
