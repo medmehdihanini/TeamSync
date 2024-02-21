@@ -10,5 +10,4 @@ export interface BaseInterfaceRepository<T extends Document> {
   update(id: string, data: Partial<T>): Promise<T | null>;
 
   delete(id: string): Promise<T|null>;
-
 }
