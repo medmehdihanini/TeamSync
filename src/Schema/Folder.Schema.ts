@@ -13,7 +13,7 @@ export class Folder extends Document{
   foldername: string;
 
 
-  @Prop({ required: false })
+  @Prop({ required: false, default:Date.now()})
   createdat: Date;
 
   @Prop({ required: false })
@@ -29,8 +29,6 @@ export class Folder extends Document{
 
   @Prop({ type:mongoose.Schema.Types.ObjectId, ref: 'Documents' })
   Documents?: Documents[];
-
-
 
 
 }

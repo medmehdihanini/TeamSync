@@ -1,13 +1,16 @@
-import { Module } from '@nestjs/common';
-import { FolderService } from './folder.service';
+import { Module } from "@nestjs/common";
+import { FolderService } from "./folder.service";
 import { FolderController } from "../../Controllers/Folder.controller";
 import { Folder, FolderSchema } from "../../Schema/Folder.Schema";
 import { FolderRepository } from "./Folder-repo/folder.repository";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "../../Schema/User.Schema";
+import { SharedServiceModule } from "../../shared/shared-service/shared-service.module";
 
 @Module({
-  imports:[    MongooseModule.forFeature([{ name: Folder.name, schema: FolderSchema }]),
+  imports: [MongooseModule.forFeature([{ name: Folder.name, schema: FolderSchema },
+    { name: User.name, schema: UserSchema }]),
+    SharedServiceModule
   ],
   controllers: [FolderController],
   providers: [FolderService, FolderRepository,
@@ -16,4 +19,5 @@ import { User, UserSchema } from "../../Schema/User.Schema";
       useClass: FolderRepository
     }]
 })
-export class FolderModule {}
+export class FolderModule {
+}
