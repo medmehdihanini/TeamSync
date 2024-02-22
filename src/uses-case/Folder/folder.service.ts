@@ -45,6 +45,18 @@ FindAllFolder() {
     return this.folderRepository.findAll();
 }
 
+
+FindFolderByUser(UserID: string) {
+    if(this.sharedService.isValidObjectId(UserID)) {
+      return this.folderRepository.findOne({ createdby: UserID });
+    }
+}
+
+FindFolderByParent(parentID: string) {
+      return this.folderRepository.findOne({ parentfolder: parentID });
+
+}
+
 findOneFolder(id: string) {
     if (this.sharedService.isValidObjectId(id)) {
       return this.folderRepository.findById(id);

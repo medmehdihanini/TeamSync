@@ -52,5 +52,16 @@ export class FolderController {
     return updtefolder;
   }
 
+@Get("yourfolder/:userid")
+  FindFolderByUser(@Param('userid') userid: string) {
+    return this.folderService.FindFolderByUser(userid);
+  }
+
+
+
+  @Get("parentfolder/:parenid")
+  FindFolderByParent(@Param('parenid') parenid: string) {
+    return this.folderService.FindFolderByParent(parenid);
+  }
 
 }
