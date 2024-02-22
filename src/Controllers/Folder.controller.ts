@@ -12,11 +12,11 @@ export class FolderController {
   constructor(private folderService: FolderService) {}
 
 
-  @Post("addfolder/:userid/:parenid?")
+  @Post("addfolder/:parenid?")
   creatuser(@Body() folder: CreateFolderDto,
             @Param('parenid') parenid: string,
-            @Param('userid') userid: string) {
-    return this.folderService.AddFolder(folder,parenid,userid);
+            ) {
+    return this.folderService.AddFolder(folder,parenid);
   }
 
   @Delete('deletefolder/:id')
