@@ -3,11 +3,12 @@ import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post } from
 import { User } from "../Schema/User.Schema";
 import { UserService } from "../uses-case/User";
 import { CreatUserDto } from "../uses-case/User/DTO/CreatUser.dto";
+import { Public } from "src/Custom Decorators/public.decorator";
 
 @Controller('users')
 export class UsersController {
 
-  constructor(private usersService: UserService) {}
+  constructor(private usersService: UserService) { }
   @Post()
   // @UsePipes(new ValidationPipe())  bch tatctiver validation eli fi creatUserDto kan fi api edhy
   creatuser(@Body() createUserDto: CreatUserDto) {
@@ -19,12 +20,12 @@ export class UsersController {
   async DeleteUser(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('invalide ID', 400);
-    const deleteuser= await this.usersService.deleteUser(id);
-    if(!deleteuser) throw new HttpException('user not found', 404);
+    const deleteuser = await this.usersService.deleteUser(id);
+    if (!deleteuser) throw new HttpException('user not found', 404);
     return deleteuser;
   }
 
-
+  @Public()
   @Get('all')
   GetAllUser() {
     return this.usersService.findAllUser();
@@ -51,7 +52,7 @@ export class UsersController {
   ) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
     if (!isValid) throw new HttpException('Invalid ID', 400);
-    const updateUser = await this.usersService.UpdateUser(id,creatUserDto);
+    const updateUser = await this.usersService.UpdateUser(id, creatUserDto);
     if (!updateUser) throw new HttpException('user not found', 404);
     return updateUser;
   }

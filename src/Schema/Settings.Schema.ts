@@ -17,6 +17,8 @@ export class Settings extends Document{
   @Prop({ required: false })
   enlignestatut: Boolean;
 
+  @Prop({ required: false })
+  remember: Boolean;
 
 }
 export const SettingsSchema = SchemaFactory.createForClass(Settings);

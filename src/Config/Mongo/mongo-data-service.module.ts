@@ -11,7 +11,4 @@ imports:[MongooseModule.forRoot(DATA_BASE_CONFIGURATION.mongoConnectionString)],
 exports:[]
 })
 export class MongoDataServiceModule {
-
-
-
 }

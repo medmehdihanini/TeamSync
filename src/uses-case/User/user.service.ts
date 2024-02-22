@@ -15,7 +15,6 @@ export class UserService {
               @InjectModel(Settings.name) private SettingsModel: Model<Settings>
   ) {
   }
-
   async CreatUser({ settings, ...creatUserDto }: CreatUserDto) {
     if (settings) {
       const newSetting = new this.SettingsModel(settings);
@@ -59,6 +58,9 @@ export class UserService {
     return this.userRe.findById(id);
   }
 
+  findUserByEmail(email: string) {
+    return this.userRe.findByEmail(email);
+  }
 
   UpdateUser(id: string, creatuserdto: CreatUserDto) {
     return this.userRe.update(id, creatuserdto);

@@ -15,6 +15,8 @@ import { FolderModule } from './uses-case/Folder/folder.module';
 import { SharedAssetsModule } from './uses-case/Shared-Assets/shared-assets.module';
 import { SettingsModule } from './uses-case/Settings/settings.module';
 import { VersionHistoryModule } from './uses-case/Version-History/version-history.module';
+import { AuthModule } from './uses-case/Auth/auth.module';
+
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { VersionHistoryModule } from './uses-case/Version-History/version-histor
     SharedAssetsModule,
     SettingsModule,
     VersionHistoryModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [
