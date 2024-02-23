@@ -31,7 +31,7 @@ export class Folder extends Document{
   //Documents?: Documents[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  createdby?: User;
+  createdby?: string;
 }
 
 export const FolderSchema = SchemaFactory.createForClass(Folder);

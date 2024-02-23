@@ -10,7 +10,6 @@ constructor(private docService:DocumentService){}
 
 @Post('add')
 addDocument(@Body() document:Documents){
-    console.log(document)
 return this.docService.addDocument(document);
 }
 

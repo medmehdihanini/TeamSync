@@ -22,12 +22,6 @@ export class Documents extends Document {
   @Prop({ default: Date.now })
   Updateat: Date;
 
-
-
-
-
-
-
   @Prop({ type: [{type:mongoose.Schema.Types.ObjectId, ref: 'CollaboorationLog' }],default:[]})
   CollaboorationLogs?: CollaboorationLog[];
 
@@ -36,11 +30,11 @@ export class Documents extends Document {
   VersionHistorys?: VersionHistory[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  createdby?: User;
+  createdby?: string;
 
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' })
-  parentfolder?: Folder;
+  parentfolder?: string;
 
 
 
