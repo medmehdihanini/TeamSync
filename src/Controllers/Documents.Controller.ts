@@ -1,11 +1,47 @@
-import mongoose from "mongoose";
-import { Body, Controller, Post } from "@nestjs/common";
-import { User } from "../Schema/User.Schema";
-import { UserService } from "../uses-case/User";
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { DocumentService } from "src/uses-case/Documents/document.service";
+import { Documents } from "src/Schema/Documents.Schema";
 
-@Controller('DocumentsController')
+@Controller('documents')
 export class DocumentsController {
 
+
+constructor(private docService:DocumentService){}
+
+@Post('add')
+addDocument(@Body() document:Documents){
+    console.log(document)
+return this.docService.addDocument(document);
+}
+
+
+
+@Delete('deletDoc/:id')
+async DeleteDoc(@Param('id') id: string) {
+  return this.docService.delete(id);
+}
+
+
+@Get('all')
+GetAllDoc() {
+  return this.docService.getAll();
+}
+
+
+
+@Get(':id')
+async GetDocById(@Param('id') id: string) {
+  return this.docService.getOne(id);
+}
+
+
+@Patch('/update')
+async UpdateDoc(
+  @Body() document:Documents
+) {
+ 
+  return this.docService.update(document) ;
+}
 
 
 

@@ -1,9 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import mongoose from "mongoose";
-import { SharedAssets } from "./SharedAssets.Schema";
 import { Documents } from "./Documents.Schema";
-import { CollaboorationLog } from "./CollaboorationLog.Schema";
 
 @Schema()
 
@@ -13,11 +11,11 @@ export class Folder extends Document{
   foldername: string;
 
 
-  @Prop({ required: false })
-  createdat: Date;
+  @Prop({ default: Date.now })
+  createat: Date;
 
-  @Prop({ required: false })
-  updateat: Date;
+  @Prop({ default: Date.now })
+  Updateat: Date;
 
   @Prop({ required: false })
   createdby: String;
@@ -29,10 +27,17 @@ export class Folder extends Document{
 
   @Prop({ type:mongoose.Schema.Types.ObjectId, ref: 'Documents' })
   Documents?: Documents[];
-
-
-
-
 }
 
 export const FolderSchema = SchemaFactory.createForClass(Folder);
+FolderSchema.pre<Documents>('save', function (next) {
+  const currentDate = new Date();
+
+  if (!this.createat) {
+    this.createat = currentDate;
+  }
+
+  this.Updateat = currentDate;
+
+  next();
+});

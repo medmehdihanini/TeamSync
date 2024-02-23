@@ -9,7 +9,7 @@ import {DocumentRepositoryInterface} from "./Document-Repo/document.repository.i
 import { DocumentsController } from "../../Controllers/Documents.Controller";
 
 @Module({
-  imports:[    MongooseModule.forFeature([{ name: Documents.name, schema: DocumentsSchema }]),
+  imports:[MongooseModule.forFeature([{ name: Documents.name, schema: DocumentsSchema }]),
   ],
   controllers: [DocumentsController],
   providers: [DocumentService,

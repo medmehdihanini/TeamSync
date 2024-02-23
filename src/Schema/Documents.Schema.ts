@@ -13,11 +13,10 @@ export class Documents extends Document {
   content: string;
 
 
-  @Prop({ required: false })
+  @Prop({ default: Date.now })
   createat: Date;
 
-
-  @Prop({ required: false })
+  @Prop({ default: Date.now })
   Updateat: Date;
 
   @Prop({ required: false })
@@ -37,3 +36,14 @@ export class Documents extends Document {
 }
 
 export const DocumentsSchema = SchemaFactory.createForClass(Documents);
+DocumentsSchema.pre<Documents>('save', function (next) {
+  const currentDate = new Date();
+
+  if (!this.createat) {
+    this.createat = currentDate;
+  }
+
+  this.Updateat = currentDate;
+
+  next();
+});
