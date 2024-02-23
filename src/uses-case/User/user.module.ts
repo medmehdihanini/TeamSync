@@ -8,7 +8,9 @@ import { Settings, SettingsSchema } from "../../Schema/Settings.Schema";
 
 @Module({
 
-  imports:[    MongooseModule.forFeature([{ name: User.name, schema: UserSchema },{name:Settings.name,schema:SettingsSchema}]),
+  imports:[    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }
+    ,{name:Settings.name,schema:SettingsSchema}]),
+
   ],
   controllers: [UsersController],
 

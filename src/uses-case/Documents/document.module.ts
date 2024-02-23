@@ -7,9 +7,12 @@ import { Documents, DocumentsSchema } from "../../Schema/Documents.Schema";
 import { DocumentRepository } from './Document-Repo/document.repository';
 import {DocumentRepositoryInterface} from "./Document-Repo/document.repository.interface";
 import { DocumentsController } from "../../Controllers/Documents.Controller";
+import { SharedServiceModule } from 'src/shared/shared-service/shared-service.module';
+import { Folder, FolderSchema } from "../../Schema/Folder.Schema";
 
 @Module({
-  imports:[MongooseModule.forFeature([{ name: Documents.name, schema: DocumentsSchema }]),
+  imports:[    MongooseModule.forFeature([{ name: Documents.name, schema: DocumentsSchema },{ name: User.name, schema: UserSchema }]),
+  SharedServiceModule,
   ],
   controllers: [DocumentsController],
   providers: [DocumentService,

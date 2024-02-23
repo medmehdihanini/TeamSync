@@ -32,11 +32,12 @@ export class User extends Document{
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Settings' })
   settings?: Settings;
 
-  @Prop({ type:mongoose.Schema.Types.ObjectId, ref: 'Folder' })
-  folders?: Folder[];
 
-  @Prop({ type:mongoose.Schema.Types.ObjectId, ref: 'SharedAssets' })
-  sharedassets?: SharedAssets[];
+ // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }], default: [] })
+ // folders?: Folder[];
+
+  //@Prop({ type:[{type:mongoose.Schema.Types.ObjectId, ref: 'SharedAssets' }],default:[]})
+ // sharedassets?: SharedAssets[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

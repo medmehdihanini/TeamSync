@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DATA_BASE_CONFIGURATION } from 'src/Config/Mongo'
+
 import { MongooseModule } from '@nestjs/mongoose';
 import mongoose from "mongoose";
+import { DATA_BASE_CONFIGURATION } from '.';
 
 
 @Module({
