@@ -34,12 +34,8 @@ export class FolderService {
       }
 
       const newFolder = new this.Foldermodel(folderData);
-      const savedFolder = await newFolder.save();
 
-
-
-
-      return savedFolder;
+      return await newFolder.save();
     } else {
       throw new HttpException("Invalid User ID", HttpStatus.BAD_REQUEST);
     }
@@ -57,14 +53,10 @@ export class FolderService {
 
   FindFolderByUser(UserID: string) {
     if (this.sharedService.isValidObjectId(UserID)) {
-      return this.folderRepository.findOne({ createdby: UserID });
+      return this.folderRepository.find({ createdby: UserID });
     }
 
   }
-
-
-
-
 
   FindFolderByParent(parentID: string) {
     return this.folderRepository.findOne({ parentfolder: parentID });
@@ -78,6 +70,9 @@ export class FolderService {
     }
   }
 
+  findFolderByParent(parentID: string) {
+    return this.folderRepository.find({ parentfolder: parentID });
+  }
 
   UpdateFolder(id: string, Updatefolderdto: UpdateFolderDto) {
     if (this.sharedService.isValidObjectId(id)) {
