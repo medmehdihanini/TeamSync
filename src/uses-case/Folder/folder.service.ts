@@ -82,4 +82,14 @@ export class FolderService {
   }
 
 
+  deleteSelcetedFolder(id: string[]) {
+    for (let i = 0; i < id.length; i++) {
+
+        this.folderRepository.delete(id[i]);
+
+    }
+
+  }
+
+
 }

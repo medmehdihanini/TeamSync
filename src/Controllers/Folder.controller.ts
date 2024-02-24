@@ -6,19 +6,20 @@ import { FolderService } from "src/uses-case/Folder/folder.service";
 import { CreatUserDto } from "../uses-case/User/DTO/CreatUser.dto";
 import { CreateFolderDto } from "../uses-case/Folder/DTO/CreateFolder.dto";
 import { UpdateFolderDto } from "../uses-case/Folder/DTO/UpdateFolder.dto";
+import { Public } from "src/Custom Decorators/public.decorator";
 
 @Controller('folder')
 export class FolderController {
   constructor(private folderService: FolderService) {}
 
-
+@Public()
   @Post("addfolder/:parenid?")
   creatuser(@Body() folder: CreateFolderDto,
             @Param('parenid') parenid: string,
             ) {
     return this.folderService.AddFolder(folder,parenid);
   }
-
+@Public()
   @Delete('deletefolder/:id')
   async DeleteFolder(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
@@ -51,7 +52,7 @@ export class FolderController {
     if (!updtefolder) throw new HttpException('user not found', 404);
     return updtefolder;
   }
-
+@Public()
 @Get("yourfolder/:userid")
   FindFolderByUser(@Param('userid') userid: string) {
     return this.folderService.FindFolderByUser(userid);
@@ -64,4 +65,13 @@ export class FolderController {
     return this.folderService.FindFolderByParent(parenid);
   }
 
+
+
+  @Public()
+  @Delete('deleteselctedfolder/:id')
+  async deleteSelcetedFolder(@Param('id') id: string) {
+    const idArray=id.split(",")
+    return this.folderService.deleteSelcetedFolder(idArray);
+
+  }
 }
