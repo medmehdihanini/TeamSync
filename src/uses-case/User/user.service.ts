@@ -5,33 +5,49 @@ import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { CreatUserDto } from "./DTO/CreatUser.dto";
 import { Settings } from "../../Schema/Settings.Schema";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 import { LoginDto } from "./DTO/Login.dto";
 
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRe: UserRepository, @InjectModel(User.name) private userModel: Model<User>,
-              @InjectModel(Settings.name) private SettingsModel: Model<Settings>
+    @InjectModel(Settings.name) private SettingsModel: Model<Settings>
   ) {
   }
-  async CreatUser({ settings, ...creatUserDto }: CreatUserDto) {
-    if (settings) {
-      const newSetting = new this.SettingsModel(settings);
-      const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(creatUserDto.password, saltOrRounds);
-      const savedSetting = await newSetting.save();
-      const newUser = new this.userModel({
-        ...creatUserDto,
-        password: hashedPassword,
-        settings: savedSetting._id
-      });
-      return newUser.save();
-    }
-    const newuser = new this.userModel(creatUserDto);
-    return newuser.save();
-  }
 
+  async CreatUser({ settings, ...creatUserDto }: CreatUserDto) {
+    let randomNumber: number;
+    let usernameWithNumber: string;
+    let userExists: boolean;
+    const existingUser = await this.userRe.findOne({ email: creatUserDto.email });
+    if (existingUser) {
+      throw new Error("There is already an account with this email.");
+    }
+    do {
+      randomNumber = Math.floor(Math.random() * 10000); 
+      const paddedNumber = randomNumber.toString().padStart(4, '0'); 
+      usernameWithNumber = `${creatUserDto.username}#${paddedNumber}`;
+      userExists = await this.userRe.findUserWithNumber(usernameWithNumber);
+    } while (userExists);
+  
+    const saltOrRounds = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
+    const password = creatUserDto.password;
+    const hash = await bcrypt.hash(password, saltOrRounds);
+    const isMatch = await bcrypt.compare(creatUserDto.password, hash);
+    const newuser = new this.userModel({
+      ...creatUserDto,
+      password: hash,
+      username: usernameWithNumber,
+    });
+  
+    console.log("Hash: ", hash);
+    console.log("Are The Password and the hash are matched? : ", isMatch);
+    console.log("The New User: ", newuser);
+  
+    return await newuser.save();
+  }
+  
   async loginUser(loginDto: LoginDto) {
     const user = await this.userRe.findOne({ email: loginDto.email });
     if (!user) {

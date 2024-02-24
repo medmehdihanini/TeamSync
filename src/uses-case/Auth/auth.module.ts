@@ -6,14 +6,18 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { PassportModule } from '@nestjs/passport';
+
+
 @Module({
     imports: 
     [
         UserModule,
+        PassportModule,
         JwtModule.register({
             global: true,
             secret: jwtConstants.secret,
-            signOptions: { expiresIn: '60s' },
+            signOptions: { expiresIn: '1d' },
           }),
     ],
     providers: 
@@ -22,8 +26,8 @@ import { AuthGuard } from './auth.guard';
             provide: APP_GUARD,
             useClass: AuthGuard,
           },
-        AuthService
-    ],
+        AuthService,
+     ],
     controllers: 
     [
         AuthController

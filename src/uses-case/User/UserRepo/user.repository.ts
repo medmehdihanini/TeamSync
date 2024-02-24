@@ -11,9 +11,14 @@ export class UserRepository extends BaseAbstractRepository<User> implements User
   constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {
     super(userModel);
   }
-  findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User> {
     return this.findOne({ email });
   }
+  async findUserWithNumber(usernameWithNumber: string): Promise<boolean> {
+    const user = await this.userModel.findOne({ username: usernameWithNumber });
+    return !!user;
+  }
+  
 
 
 

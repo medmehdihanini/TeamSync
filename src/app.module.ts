@@ -5,7 +5,7 @@ import { UserService } from './uses-case/User/user.service';
 import { UserModule } from './uses-case/User/user.module';
 import { UserRepository } from "./uses-case/User";
 import { BaseAbstractRepository } from './repositories/Base';
-import {BaseInterfaceRepository} from "./repositories/Base";
+import { BaseInterfaceRepository } from "./repositories/Base";
 import { SharedServiceModule } from './shared/shared-service/shared-service.module';
 import { CollaboorationlogModule } from './uses-case/Collabooration-Log/collaboorationlog.module';
 import { DocumentModule } from './uses-case/Documents/document.module';
@@ -16,6 +16,10 @@ import { SharedAssetsModule } from './uses-case/Shared-Assets/shared-assets.modu
 import { SettingsModule } from './uses-case/Settings/settings.module';
 import { VersionHistoryModule } from './uses-case/Version-History/version-history.module';
 import { AuthModule } from './uses-case/Auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './uses-case/Auth/auth.service';
+
+
 
 
 @Module({
@@ -33,10 +37,9 @@ import { AuthModule } from './uses-case/Auth/auth.module';
   ],
   controllers: [],
   providers: [
-SharedService
+    SharedService,
 
-
-
+    
   ],
 })
-export class AppModule {}
+export class AppModule { }

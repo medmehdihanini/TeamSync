@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post } from "@nestjs/common";
 import { User } from "../Schema/User.Schema";
 import { UserService } from "../uses-case/User";
 import { CreatUserDto } from "../uses-case/User/DTO/CreatUser.dto";
@@ -9,11 +9,15 @@ import { Public } from "src/Custom Decorators/public.decorator";
 export class UsersController {
 
   constructor(private usersService: UserService) { }
-  @Post()
-  // @UsePipes(new ValidationPipe())  bch tatctiver validation eli fi creatUserDto kan fi api edhy
-  creatuser(@Body() createUserDto: CreatUserDto) {
-    console.log(createUserDto);
-    return this.usersService.CreatUser(createUserDto);
+  @Public()
+  @Post('signup')
+  async createUser(@Body() createUserDto: CreatUserDto) {
+    try {
+      const newUser = await this.usersService.CreatUser(createUserDto);
+      return newUser;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.CONFLICT);
+    }
   }
 
   @Delete('deleteuser/:id')
@@ -42,8 +46,17 @@ export class UsersController {
       throw new HttpException('user not foundt', 404);
     }
     return findUser;
+  } 
+  
+  @Public()
+  @Get('email/:email')
+  async getUserByEmail(@Param('email') email: string) {
+    const user = await this.usersService.findUserByEmail(email);
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+    return user;
   }
-
 
   @Patch('/update/:id')
   async UpdateUser(
