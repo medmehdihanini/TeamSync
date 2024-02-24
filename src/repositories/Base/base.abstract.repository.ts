@@ -41,6 +41,10 @@ export abstract  class BaseAbstractRepository<T extends Document> implements  Ba
 return await this.userService.getUsersByFilter(filter);
 
    */
+
+
+
+
   async find(filter: any): Promise<T[]> {
     return await this.model.find(filter).exec();
   }

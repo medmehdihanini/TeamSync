@@ -1,6 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from "mongoose";
 import { Document } from 'mongoose';
+import { User } from "./User.Schema";
+import { Documents } from "./Documents.Schema";
 
 @Schema()
 export class VersionHistory extends Document{
@@ -12,9 +14,9 @@ export class VersionHistory extends Document{
   @Prop({ required: false })
   TimesTamp: Date;
 
-  @Prop({ required: false })
-  documentid: string;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Documents' })
+  documentid?: Documents;
 
 }
 
