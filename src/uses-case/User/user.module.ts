@@ -20,7 +20,8 @@ import { Settings, SettingsSchema } from "../../Schema/Settings.Schema";
       provide: 'UserRepositoryInterface',
       useClass: UserRepository
     }
-  ]
+  ],
+  exports: [UserService]
 
 })
 export class UserModule {}
