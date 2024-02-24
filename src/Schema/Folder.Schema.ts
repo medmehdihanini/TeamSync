@@ -9,7 +9,7 @@ import { User } from "./User.Schema";
 export class Folder extends Document{
 
   @Prop({ required: false })
-  foldername: string;
+    foldername: string;
 
 
 
