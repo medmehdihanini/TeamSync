@@ -14,7 +14,12 @@ export class DocumentRepository extends BaseAbstractRepository<Documents> implem
   }
 
 
-
+  async findAllWithPagination(query: any, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const documents = await this.documentsModel.find(query).skip(skip).limit(limit).exec();
+    const totalDocuments = await this.documentsModel.countDocuments(query);
+    return { documents, totalDocuments };
+  }
 
 
 

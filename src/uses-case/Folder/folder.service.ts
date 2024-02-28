@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { FolderRepository } from "./Folder-repo/folder.repository";
 import { InjectModel } from "@nestjs/mongoose";
 import { User } from "../../Schema/User.Schema";
-import { Model } from "mongoose";
+import mongoose, { Model } from "mongoose";
 import { Folder } from "../../Schema/Folder.Schema";
 import { CreateFolderDto } from "./DTO/CreateFolder.dto";
 import { SharedService } from "../../shared/shared-service/shared.service";
@@ -44,6 +44,12 @@ export class FolderService {
 
   DelteFolder(id: string) {
     return this.folderRepository.delete(id);
+  }
+
+  DelteallFolder(ids: string[]) {
+    return Promise.all(ids.map(async (id) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) throw new HttpException('invalide ID', 400);
+      this.folderRepository.delete(id)}));
   }
 
   FindAllFolder() {
