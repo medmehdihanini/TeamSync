@@ -11,7 +11,7 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
     imports: 
-    [
+    [ 
         UserModule,
         PassportModule,
         JwtModule.register({
