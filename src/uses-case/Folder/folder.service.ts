@@ -22,8 +22,7 @@ export class FolderService {
   }
 
   async AddFolder({createdby,...folder}: CreateFolderDto, parentID: string) {
-
-
+    let folders=(await this.folderRepository.find({ foldername:folder.foldername})).length
     if (this.sharedService.isValidObjectId(createdby)) {
       const folderData = {
         ...folder,
@@ -32,6 +31,9 @@ export class FolderService {
 
       if (this.sharedService.isValidObjectId(parentID)) {
         folderData.parentfolder = parentID;
+      }
+      if(folders!=0){
+        folderData.foldername=folderData.foldername+" ("+folders+")"
       }
 
       const newFolder = new this.Foldermodel(folderData);
