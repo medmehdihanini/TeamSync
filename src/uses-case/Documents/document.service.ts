@@ -22,8 +22,9 @@ export class DocumentService {
 
 
    async addDocument(document:Documents){
+    document._id=null
   if(Types.ObjectId.isValid(document.parentfolder.toString())){
-    document.parentfolder=document.parentfolder.toString();
+    document.parentfolder=new  Types.ObjectId(document.parentfolder).toString();
   }else{
     let folder=new this.folderModel();
     folder.foldername=document.parentfolder
@@ -31,7 +32,7 @@ export class DocumentService {
     const newfolder=await folder.save()
     document.parentfolder=newfolder._id
   }
-    document.createdby= document.createdby.toString()
+    document.createdby= new  Types.ObjectId(document.createdby).toString()
     return this.documentRepository.create(document);
   }
 
