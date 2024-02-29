@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post, Query } from "@nestjs/common";
 import { User } from "../Schema/User.Schema";
 import { UserService } from "../uses-case/User";
 import { FolderService } from "src/uses-case/Folder/folder.service";
@@ -12,14 +12,16 @@ import { Public } from "src/Custom Decorators/public.decorator";
 export class FolderController {
   constructor(private folderService: FolderService) {}
 
-@Public()
+
+  @Public()
   @Post("addfolder/:parenid?")
   creatuser(@Body() folder: CreateFolderDto,
             @Param('parenid') parenid: string,
             ) {
     return this.folderService.AddFolder(folder,parenid);
   }
-@Public()
+
+  @Public()
   @Delete('deletefolder/:id')
   async DeleteFolder(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
@@ -29,18 +31,41 @@ export class FolderController {
     return deletefolder;
   }
 
+
+  @Public()
+  @Delete('deleteAllfolder')
+  async DeleteallFolders(@Body() ids: string[]) {
+    return this.folderService.DelteallFolder(ids);
+  }
+
+  
+@Public()
+@Get('getAllby')
+async getAllby(
+@Query('parentId') parentId?: string,
+@Query('name') name?: string,
+@Query('createdBy') createdBy?: string,
+@Query('createdDate') createdDate?: Date,
+@Query('lastUpdate') lastUpdate?: Date,
+@Query('page') page: number = 1,
+@Query('limit') limit: number = 10
+) {
+return await this.folderService.getAllby(parentId, name, createdBy, createdDate, lastUpdate, page, limit);
+}
+
+  @Public()
   @Get('allfolder')
   GetAllFolder() {
     return this.folderService.FindAllFolder();
   }
-
+  @Public()
 @Get('onefolder/:folderid')
   GetOneFolder(@Param('folderid') userid: string) {
     return this.folderService.findOneFolder(userid);
   }
 
 
-
+  @Public()
   @Patch('/update/:idfolder')
   async UpdateFolder(
     @Body() updatefolderdto: UpdateFolderDto,
@@ -52,14 +77,16 @@ export class FolderController {
     if (!updtefolder) throw new HttpException('user not found', 404);
     return updtefolder;
   }
-@Public()
+
+
+  @Public()
 @Get("yourfolder/:userid")
   FindFolderByUser(@Param('userid') userid: string) {
     return this.folderService.FindFolderByUser(userid);
   }
 
 
-
+  @Public()
   @Get("parentfolder/:parenid")
   FindFolderByParent(@Param('parenid') parenid: string) {
     return this.folderService.FindFolderByParent(parenid);

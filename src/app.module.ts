@@ -18,6 +18,8 @@ import { SettingsModule } from './uses-case/Settings/settings.module';
 import { VersionHistoryModule } from './uses-case/Version-History/version-history.module';
 import { AuthModule } from './uses-case/Auth/auth.module';
 import { AuthService } from './uses-case/Auth/auth.service';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './uses-case/Auth/auth.guard';
 
 
 
@@ -37,7 +39,11 @@ import { AuthService } from './uses-case/Auth/auth.service';
     AuthModule,
   ],
   controllers: [],
-  providers: [
+  providers: [ 
+    {
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+  },
     SharedService,
 
     

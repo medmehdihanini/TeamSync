@@ -15,18 +15,12 @@ export class Documents extends Document {
   content: string;
 
 
+
   @Prop({ required: false , default: Date.now()})
   createat: Date;
 
-
-  @Prop({ required: false })
+  @Prop({ default: Date.now })
   Updateat: Date;
-
-
-
-
-
-
 
   @Prop({ type: [{type:mongoose.Schema.Types.ObjectId, ref: 'CollaboorationLog' }],default:[]})
   CollaboorationLogs?: CollaboorationLog[];
@@ -36,11 +30,11 @@ export class Documents extends Document {
   VersionHistorys?: VersionHistory[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  createdby?: User;
+  createdby?: string;
 
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' })
-  parentfolder?: Folder;
+  parentfolder?: string;
 
 
 
@@ -48,3 +42,14 @@ export class Documents extends Document {
 }
 
 export const DocumentsSchema = SchemaFactory.createForClass(Documents);
+DocumentsSchema.pre<Documents>('save', function (next) {
+  const currentDate = new Date();
+
+  if (!this.createat) {
+    this.createat = currentDate;
+  }
+
+  this.Updateat = currentDate;
+
+  next();
+});
