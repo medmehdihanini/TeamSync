@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, Param, Patch, Post, Query } from "@nestjs/common";
 import { User } from "../Schema/User.Schema";
 import { UserService } from "../uses-case/User";
 import { FolderService } from "src/uses-case/Folder/folder.service";
@@ -35,6 +35,21 @@ export class FolderController {
   async DeleteallFolders(@Body() ids: string[]) {
     return this.folderService.DelteallFolder(ids);
   }
+
+  
+@Public()
+@Get('getAllby')
+async getAllby(
+@Query('parentId') parentId?: string,
+@Query('name') name?: string,
+@Query('createdBy') createdBy?: string,
+@Query('createdDate') createdDate?: Date,
+@Query('lastUpdate') lastUpdate?: Date,
+@Query('page') page: number = 1,
+@Query('limit') limit: number = 10
+) {
+return await this.folderService.getAllby(parentId, name, createdBy, createdDate, lastUpdate, page, limit);
+}
 
   @Public()
   @Get('allfolder')

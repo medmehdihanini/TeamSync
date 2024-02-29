@@ -8,6 +8,7 @@ export class DocumentsController {
 
 
 constructor(private docService:DocumentService){}
+
 @Public()
 @Post('add')
 addDocument(@Body() document:Documents){
@@ -20,19 +21,39 @@ return this.docService.addDocument(document);
 async DeleteDoc(@Param('id') id: string) {
   return this.docService.delete(id);
 }
-
 @Public()
-@Get('getAllby')
+  @Delete('deleteAlldocs')
+  async deleteAlldocs(@Body() ids: string[]) {
+    return this.docService.Deltealldocs(ids);
+  }
+@Public()
+@Get('getAlldocsby')
 async getAllby(
 @Query('parentId') parentId?: string,
+@Query('name') name?: string,
 @Query('createdBy') createdBy?: string,
 @Query('createdDate') createdDate?: Date,
 @Query('lastUpdate') lastUpdate?: Date,
 @Query('page') page: number = 1,
 @Query('limit') limit: number = 10
 ) {
-return await this.docService.getAllby(parentId, createdBy, createdDate, lastUpdate, page, limit);
+return await this.docService.getAllby(parentId, name, createdBy, createdDate, lastUpdate, page, limit);
 }
+
+@Public()
+@Get('getAllDocAndFoldersBy')
+async getAllDocAndFolderby(
+@Query('parentId') parentId?: string,
+@Query('name') name?: string,
+@Query('createdBy') createdBy?: string,
+@Query('createdDate') createdDate?: Date,
+@Query('lastUpdate') lastUpdate?: Date,
+@Query('page') page: number = 1,
+@Query('limit') limit: number = 10
+) {
+return await this.docService.getAllDocAndFolderby(parentId, name, createdBy, createdDate, lastUpdate, page, limit);
+}
+
 
 @Public()
 @Get('all')

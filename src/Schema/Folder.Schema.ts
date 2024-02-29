@@ -35,11 +35,11 @@ export class Folder extends Document{
 }
 
 export const FolderSchema = SchemaFactory.createForClass(Folder);
-FolderSchema.pre<Documents>('save', function (next) {
+FolderSchema.pre<Folder>('save', function (next) {
   const currentDate = new Date();
 
-  if (!this.createat) {
-    this.createat = currentDate;
+  if (!this.createdat) {
+    this.createdat = currentDate;
   }
 
   this.Updateat = currentDate;

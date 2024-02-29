@@ -1,6 +1,6 @@
 import { IsOptional } from "class-validator";
 
-export class SimpleDocDto {
+export class SimpleFolderDto {
 
 
     @IsOptional()
@@ -10,7 +10,7 @@ export class SimpleDocDto {
     title: string;
 
     @IsOptional()
-    type: string="document";
+    type: string="folder";
 
     @IsOptional()
     createdby: String;
