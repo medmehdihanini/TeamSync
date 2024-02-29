@@ -19,6 +19,8 @@ import { VersionHistoryModule } from './uses-case/Version-History/version-histor
 import { AuthModule } from './uses-case/Auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './uses-case/Auth/auth.service';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './uses-case/Auth/auth.guard';
 
 
 
@@ -38,7 +40,11 @@ import { AuthService } from './uses-case/Auth/auth.service';
     AuthModule,
   ],
   controllers: [],
-  providers: [
+  providers: [ 
+    {
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+  },
     SharedService,
 
     

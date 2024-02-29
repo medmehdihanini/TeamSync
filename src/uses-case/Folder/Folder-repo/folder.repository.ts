@@ -15,6 +15,14 @@ export class FolderRepository extends BaseAbstractRepository<Folder> implements 
 
 
 
+  async findAllWithPagination(query: any, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const data = await this.FolderModue.find(query).skip(skip).limit(limit).exec();
+    const totaldata = await this.FolderModue.countDocuments(query);
+    return { data, totaldata };
+  }
+
+
 
 
 
