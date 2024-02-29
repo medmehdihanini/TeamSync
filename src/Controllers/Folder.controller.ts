@@ -12,6 +12,7 @@ import { Public } from "src/Custom Decorators/public.decorator";
 export class FolderController {
   constructor(private folderService: FolderService) {}
 
+
   @Public()
   @Post("addfolder/:parenid?")
   creatuser(@Body() folder: CreateFolderDto,
@@ -19,6 +20,7 @@ export class FolderController {
             ) {
     return this.folderService.AddFolder(folder,parenid);
   }
+
   @Public()
   @Delete('deletefolder/:id')
   async DeleteFolder(@Param('id') id: string) {
@@ -75,6 +77,8 @@ return await this.folderService.getAllby(parentId, name, createdBy, createdDate,
     if (!updtefolder) throw new HttpException('user not found', 404);
     return updtefolder;
   }
+
+
   @Public()
 @Get("yourfolder/:userid")
   FindFolderByUser(@Param('userid') userid: string) {
@@ -88,4 +92,13 @@ return await this.folderService.getAllby(parentId, name, createdBy, createdDate,
     return this.folderService.FindFolderByParent(parenid);
   }
 
+
+
+  @Public()
+  @Delete('deleteselctedfolder/:id')
+  async deleteSelcetedFolder(@Param('id') id: string) {
+    const idArray=id.split(",")
+    return this.folderService.deleteSelcetedFolder(idArray);
+
+  }
 }
