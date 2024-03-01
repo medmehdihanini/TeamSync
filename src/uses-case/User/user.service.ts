@@ -42,6 +42,7 @@ export class UserService {
       ...creatUserDto,
       password: hash,
       username: usernameWithNumber,
+      isEmailConfirmed:false,
     });
   
     console.log("Hash: ", hash);
@@ -85,6 +86,11 @@ export class UserService {
     return this.userRe.update(id, creatuserdto);
   }
 
+  async markEmailAsConfirmed(id: string) {
+    return this.userRe.update( id , {
+      isEmailConfirmed: true
+    });
+  }
 
 }
 

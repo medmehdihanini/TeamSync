@@ -24,7 +24,7 @@ export class CreatUserDto {
 
   @IsString()
   @IsOptional()
-  lastname: string;
+  lastname: string; 
 
   @IsString()
   @IsOptional()
@@ -37,6 +37,10 @@ export class CreatUserDto {
   @IsString()
   @IsOptional()
   Role: Role;
+
+  @IsBoolean()
+  @IsOptional()
+  isEmailConfirmed: boolean;
 
   @IsOptional()
   @ValidateNested()

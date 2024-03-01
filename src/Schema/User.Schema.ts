@@ -32,6 +32,9 @@ export class User extends Document{
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Settings' })
   settings?: Settings;
 
+  @Prop({ required: false })
+  isEmailConfirmed: boolean;
+
 
  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }], default: [] })
  // folders?: Folder[];

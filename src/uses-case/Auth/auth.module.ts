@@ -7,6 +7,10 @@ import { jwtConstants } from './constants';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { PassportModule } from '@nestjs/passport';
+import { EmailConfirmationService } from './EmailConfirmation/emailConfirmation.service';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
+import { EmailModule } from '../email/email.module';
 
 
 @Module({
@@ -14,10 +18,19 @@ import { PassportModule } from '@nestjs/passport';
     [ 
         UserModule,
         PassportModule,
+        EmailModule,
         JwtModule.register({
             global: true,
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '1d' },
+          }),
+          ConfigModule.forRoot({
+            validationSchema: Joi.object({
+              JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
+              JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+              EMAIL_CONFIRMATION_URL: Joi.string().required(),
+              // ...
+            })
           }),
     ],
     providers: 
@@ -27,6 +40,7 @@ import { PassportModule } from '@nestjs/passport';
             useClass: AuthGuard,
           },
         AuthService,
+        EmailConfirmationService
      ],
     controllers: 
     [

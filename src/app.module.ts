@@ -11,13 +11,14 @@ import { SharedAssetsModule } from './uses-case/Shared-Assets/shared-assets.modu
 import { SettingsModule } from './uses-case/Settings/settings.module';
 import { VersionHistoryModule } from './uses-case/Version-History/version-history.module';
 import { AuthModule } from './uses-case/Auth/auth.module';
-import { MailModule } from './uses-case/email/mail.module';
-
-
+import { EmailModule } from './uses-case/email/email.module';
+import * as Joi from 'joi'; 
+import { EmailConfirmationModule } from './uses-case/Auth/EmailConfirmation/emailConfirmation.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), MailModule,
+    EmailConfirmationModule,
+    EmailModule,
     MongoDataServiceModule,
     UserModule,
     SharedServiceModule,
@@ -28,11 +29,17 @@ import { MailModule } from './uses-case/email/mail.module';
     SettingsModule,
     VersionHistoryModule,
     AuthModule,
-    MailModule,
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        EMAIL_SERVICE: Joi.string().required(),
+        EMAIL_USER: Joi.string().required(),
+        EMAIL_PASSWORD: Joi.string().required(),
+      })
+    }),
   ],
   controllers: [],
   providers: [
-    SharedService,    
+    SharedService,
   ],
 })
 export class AppModule { }

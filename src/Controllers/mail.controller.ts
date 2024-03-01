@@ -1,13 +1,22 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import Email from 'emails';
+
 import { Public } from 'src/Custom Decorators/public.decorator';
-import { MailService } from 'src/uses-case/email/mail.service';
+import EmailService from 'src/uses-case/email/email.service';
+import { Body, Controller, HttpCode, HttpStatus, Post, Get, Request, Req, UseGuards, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { AuthService } from 'src/uses-case/Auth/auth.service';
+import { LoginDto } from 'src/uses-case/User/DTO/Login.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
+import { CreatUserDto } from 'src/uses-case/User/DTO/CreatUser.dto';
+import { EmailConfirmationService } from 'src/uses-case/Auth/EmailConfirmation/emailConfirmation.service';
+import { UserService } from 'src/uses-case/User';
+import ConfirmEmailDto from 'src/uses-case/Auth/EmailConfirmation/confirmEmail.dto';
+import RequestWithUser from 'src/uses-case/Auth/requestWithUser.interface';
 
 @Controller('p0?: { url: string; }p0: { url: string; }email')
 export class MailController {
   constructor(
-
-    private readonly mailService: MailService,
+    private readonly emailConfirmationService: EmailConfirmationService,
+    private readonly mailService: EmailService,
   ) { }
 
 
@@ -18,9 +27,9 @@ export class MailController {
   ): Promise<string> {
     await this.mailService.sendMail({
       ...sendMailDto,
-      template: Email({ url: 'http://example.com' }),
     });
 
     return 'Email sent successfully';
   }
+
 }
