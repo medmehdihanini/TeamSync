@@ -160,4 +160,10 @@ export class FolderService {
   }
 
 
+
+  sharedFolder(id: string, user: string) {
+
+  }
+
+
 }
