@@ -23,15 +23,17 @@ export class DocumentService {
 
    async addDocument(document:Documents){
     document._id=null
-  if(Types.ObjectId.isValid(document.parentfolder.toString())){
-    document.parentfolder=new  Types.ObjectId(document.parentfolder).toString();
-  }else{
-    let folder=new this.folderModel();
-    folder.foldername=document.parentfolder
-    folder.createdby=document.createdby
-    const newfolder=await folder.save()
-    document.parentfolder=newfolder._id
-  }
+    if(document.parentfolder!=null){
+      if(Types.ObjectId.isValid(document.parentfolder.toString())){
+        document.parentfolder=new  Types.ObjectId(document.parentfolder).toString();
+      }else{
+        let folder=new this.folderModel();
+        folder.foldername=document.parentfolder
+        folder.createdby=document.createdby
+        const newfolder=await folder.save()
+        document.parentfolder=newfolder._id
+      }
+    }
     document.createdby= new  Types.ObjectId(document.createdby).toString()
     return this.documentRepository.create(document);
   }
@@ -52,11 +54,13 @@ export class DocumentService {
     return this.documentRepository.findAll()
   }
 
-  async getAllby(parentId: string, name:string, createdBy: string, createdDate: Date, lastUpdate: Date, page: number = 1, limit: number = 10) {
+  async getAllby(parentId: string, name:string, createdBy: string, createdDate: Date,sortupdated:string, lastUpdate: Date, page: number = 1, limit: number = 10) {
     const query: any = {};
-  if (parentId && Types.ObjectId.isValid(parentId)) {
-    query.parentfolder = new  Types.ObjectId(parentId);
-  }
+    if (parentId && Types.ObjectId.isValid(parentId)) {
+      query.parentfolder = new  Types.ObjectId(parentId);
+    }else if(name!=""){
+      query.parentfolder=null;
+    }
   if (createdBy && Types.ObjectId.isValid(createdBy)) {
     query.createdby = new  Types.ObjectId(createdBy);
   }
@@ -70,7 +74,7 @@ export class DocumentService {
     query.title = { $regex: `^${name}`, $options: 'i' };
     }
   try {
-    const result = await this.documentRepository.findAllWithPagination(query, page, limit);
+    const result = await this.documentRepository.findAllWithPagination(query,sortupdated, page, limit);
     const totaldata = result.totaldata;
     const totalPages = Math.ceil(totaldata / limit);
     const data: SimpleDocDto[] = result.data.map((document: any) => {
@@ -96,11 +100,13 @@ export class DocumentService {
 
 
 
-  async getAllDocAndFolderby(parentId: string, name:string, createdBy: string, createdDate: Date, lastUpdate: Date, page: number = 1, limit: number = 10) {
+  async getAllDocAndFolderby(parentId: string, name:string, createdBy: string,sortupdated:string, createdDate: Date, lastUpdate: Date, page: number = 1, limit: number = 10) {
     const query: any = {};
     limit=limit/2
   if (parentId && Types.ObjectId.isValid(parentId)) {
     query.parentfolder = new  Types.ObjectId(parentId);
+  }else if(!name) {
+    query.parentfolder=null;
   }
   if (createdBy && Types.ObjectId.isValid(createdBy)) {
     query.createdby = new  Types.ObjectId(createdBy);
@@ -114,7 +120,8 @@ export class DocumentService {
   if(name){
     query.foldername = { $regex: `^${name}`, $options: 'i' };
   }
-  const folderResult = await this.folderrepo.findAllWithPagination(query, page, limit);
+  console.log(query);
+  let folderResult = await this.folderrepo.findAllWithPagination(query,sortupdated, page, limit);
   const data: SimpleDocDto[] = folderResult.data.map((folder: any) => {
     const simplefolderDto: SimpleDocDto = new SimpleDocDto();
     simplefolderDto.id = folder.id;
@@ -130,9 +137,20 @@ export class DocumentService {
     query.foldername = null
     }
   try {
-    const result = await this.documentRepository.findAllWithPagination(query, page, limit);
+    let result = await this.documentRepository.findAllWithPagination(query,sortupdated, page, limit);
     const totaldata = result.totaldata+folderResult.totaldata;
-    const totalPages = Math.ceil((totaldata) / limit*2);
+    console.log(folderResult)
+    console.log(result)
+    let totalPages = Math.ceil((totaldata) / limit*2);
+    if(folderResult.data.length==0){
+      totalPages = Math.ceil((totaldata) / limit);
+   }
+   
+   if(result.data.length==0){
+    totalPages = Math.ceil((totaldata) / limit);
+   }
+   console.log(folderResult)
+    console.log(result)
      result.data.map((document: any) => {
       const simpleDocDto: SimpleDocDto = new SimpleDocDto();
       simpleDocDto.id = document.id;

@@ -43,12 +43,13 @@ async getAllby(
 @Query('parentId') parentId?: string,
 @Query('name') name?: string,
 @Query('createdBy') createdBy?: string,
+@Query('sortupdated') sortupdated?:string,
 @Query('createdDate') createdDate?: Date,
 @Query('lastUpdate') lastUpdate?: Date,
 @Query('page') page: number = 1,
 @Query('limit') limit: number = 10
 ) {
-return await this.folderService.getAllby(parentId, name, createdBy, createdDate, lastUpdate, page, limit);
+return await this.folderService.getAllby(parentId, name, createdBy, createdDate,sortupdated, lastUpdate, page, limit);
 }
 
   @Public()

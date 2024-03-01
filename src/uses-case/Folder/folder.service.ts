@@ -20,24 +20,42 @@ export class FolderService {
               private sharedService: SharedService
   ) {
   }
+  async AddFolder({ createdby, ...folder }: CreateFolderDto, parentID: string) {
+    const baseFolderName = folder.foldername;
+    let highestNumber = 0;
+    let newFolderNumber=0;
+    const regex = new RegExp(`^${baseFolderName}( \\(([0-9]+)\\))?$`);
+  
+    const folders = await this.folderRepository.find({ foldername: regex });
+  
+    folders.forEach((folder) => {
+      const matches = folder.foldername.match(/\(([0-9]+)\)$/);
+      if (matches && matches[1]) {
+        const number = parseInt(matches[1], 10);
+        if (number > highestNumber) {
+          highestNumber = number;
+        }
+      }
+    });
 
-  async AddFolder({createdby,...folder}: CreateFolderDto, parentID: string) {
-    let folders=(await this.folderRepository.find({ foldername:folder.foldername})).length
+    if(folders.length!=0){
+       newFolderNumber = highestNumber + 1;
+    }
+    const newFolderName = newFolderNumber === 0 ? baseFolderName : `${baseFolderName} (${newFolderNumber})`;
+  
     if (this.sharedService.isValidObjectId(createdby)) {
       const folderData = {
         ...folder,
-        createdby: createdby
+        createdby: createdby,
+        foldername: newFolderName,
       };
-
+  
       if (this.sharedService.isValidObjectId(parentID)) {
         folderData.parentfolder = parentID;
       }
-      if(folders!=0){
-        folderData.foldername=folderData.foldername+" ("+folders+")"
-      }
-
+  
       const newFolder = new this.Foldermodel(folderData);
-
+  
       return await newFolder.save();
     } else {
       throw new HttpException("Invalid User ID", HttpStatus.BAD_REQUEST);
@@ -90,7 +108,7 @@ export class FolderService {
 
   }
 
-  async getAllby(parentId: string, name: string, createdBy: string, createdDate: Date, lastUpdate: Date, page: number = 1, limit: number = 10) {
+  async getAllby(parentId: string, name: string, createdBy: string, createdDate: Date,sortupdated:string, lastUpdate: Date, page: number = 1, limit: number = 10) {
     const query: any = {};
   if (parentId && Types.ObjectId.isValid(parentId)) {
     query.parentfolder = new  Types.ObjectId(parentId);
@@ -108,7 +126,7 @@ export class FolderService {
     query.foldername = { $regex: `^${name}`, $options: 'i' };
   }
   try {
-    const result = await this.folderRepository.findAllWithPagination(query, page, limit);
+    const result = await this.folderRepository.findAllWithPagination(query,sortupdated, page, limit);
     const totaldata = result.totaldata;
     const totalPages = Math.ceil(totaldata / limit);
     const data: SimpleFolderDto[] = result.data.map((folder: any) => {
