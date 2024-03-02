@@ -120,7 +120,7 @@ export class DocumentService {
   if(name){
     query.foldername = { $regex: `^${name}`, $options: 'i' };
   }
-  console.log(query);
+
   let folderResult = await this.folderrepo.findAllWithPagination(query,sortupdated, page, limit);
   const data: SimpleDocDto[] = folderResult.data.map((folder: any) => {
     const simplefolderDto: SimpleDocDto = new SimpleDocDto();
@@ -139,8 +139,7 @@ export class DocumentService {
   try {
     let result = await this.documentRepository.findAllWithPagination(query,sortupdated, page, limit);
     const totaldata = result.totaldata+folderResult.totaldata;
-    console.log(folderResult)
-    console.log(result)
+
     let totalPages = Math.ceil((totaldata) / limit*2);
     if(folderResult.data.length==0){
       totalPages = Math.ceil((totaldata) / limit);
@@ -149,8 +148,7 @@ export class DocumentService {
    if(result.data.length==0){
     totalPages = Math.ceil((totaldata) / limit);
    }
-   console.log(folderResult)
-    console.log(result)
+
      result.data.map((document: any) => {
       const simpleDocDto: SimpleDocDto = new SimpleDocDto();
       simpleDocDto.id = document.id;

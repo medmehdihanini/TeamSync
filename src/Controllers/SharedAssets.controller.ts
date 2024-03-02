@@ -1,14 +1,10 @@
-import mongoose from "mongoose";
-import { Body, Controller, Param, Post } from "@nestjs/common";
-import { User } from "../Schema/User.Schema";
-import { UserService } from "../uses-case/User";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { Public } from "../Custom Decorators/public.decorator";
-import { CreateFolderDto } from "../uses-case/Folder/DTO/CreateFolder.dto";
-import { SharedService } from "../shared/shared-service/shared.service";
 import { SharedAssetsService } from "../uses-case/Shared-Assets/shared-assets.service";
 import { createSharedDto } from "../uses-case/Shared-Assets/DTO/CreateShared.dto";
+import { findSharedDto } from "../uses-case/Shared-Assets/DTO/findSharedAssets.dto";
 
-@Controller('SharedAssets')
+@Controller("SharedAssets")
 export class SharedAssetsController {
   constructor(private SharedAssetsService: SharedAssetsService) {
   }
@@ -16,10 +12,17 @@ export class SharedAssetsController {
 
   @Public()
   @Post("create")
-  creatuser(@Body() sharedassets: createSharedDto,
-
+  addsharedassets(@Body() sharedassets: createSharedDto
   ) {
     return this.SharedAssetsService.createSharedAssets(sharedassets);
+  }
+
+
+  @Public()
+  @Get("find")
+  findsharedasseys(@Body() findsharedassets: findSharedDto
+  ) {
+    return this.SharedAssetsService.findFolderSharedAssets(findsharedassets);
   }
 
 }
