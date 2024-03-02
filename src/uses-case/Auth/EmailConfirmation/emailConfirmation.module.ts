@@ -9,8 +9,7 @@ import EmailService from 'src/uses-case/email/email.service';
 @Module({
   imports: [
     ConfigModule,
-    UserModule, // Import UserModule here if UserService is provided by it
-    // Other modules if needed
+    UserModule,
   ],
   controllers: [EmailConfirmationController],
   providers: [EmailConfirmationService, EmailService],

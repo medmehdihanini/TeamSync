@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import VerificationTokenPayload from './verificationTokenPayload.interface';
 import { UserService } from 'src/uses-case/User';
 import EmailService from 'src/uses-case/email/email.service';
+
 
  
 @Injectable()
@@ -38,7 +39,7 @@ export class EmailConfirmationService {
     if (user.isEmailConfirmed) {
       throw new BadRequestException('Email already confirmed');
     }
-    await this.usersService.markEmailAsConfirmed(user.id);
+    await this.usersService.markEmailAsConfirmed(user.id.toString());
   }
  
   public async decodeConfirmationToken(token: string) {
@@ -58,11 +59,13 @@ export class EmailConfirmationService {
       throw new BadRequestException('Bad confirmation token');
     }
   }
-  public async resendConfirmationLink(userId: number) {
-    const user = await this.usersService.findOneUser(userId.toString());
+  public async resendConfirmationLink(userId: string) {
+    const user = await this.usersService.findOneUser(userId);
     if (user.isEmailConfirmed) {
       throw new BadRequestException('Email already confirmed');
     }
     await this.sendVerificationLink(user.email);
   }
+  
+
 }

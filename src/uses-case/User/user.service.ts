@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { User } from "../../Schema/User.Schema";
 import { UserRepository } from "./UserRepo/user.repository";
 import { Model } from "mongoose";
@@ -7,15 +7,19 @@ import { CreatUserDto } from "./DTO/CreatUser.dto";
 import { Settings } from "../../Schema/Settings.Schema";
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from "./DTO/Login.dto";
-
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as crypto from 'crypto';
+import EmailService from "../email/email.service";
 
 @Injectable()
 export class UserService {
 
-  constructor(private readonly userRe: UserRepository, @InjectModel(User.name) private userModel: Model<User>,
+  constructor(
+    private readonly emailService: EmailService,
+    private readonly userRe: UserRepository, @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Settings.name) private SettingsModel: Model<Settings>
-
-
   ) {
   }
 
@@ -28,12 +32,12 @@ export class UserService {
       throw new Error("There is already an account with this email.");
     }
     do {
-      randomNumber = Math.floor(Math.random() * 10000); 
-      const paddedNumber = randomNumber.toString().padStart(4, '0'); 
+      randomNumber = Math.floor(Math.random() * 10000);
+      const paddedNumber = randomNumber.toString().padStart(4, '0');
       usernameWithNumber = `${creatUserDto.username}#${paddedNumber}`;
       userExists = await this.userRe.findUserWithNumber(usernameWithNumber);
     } while (userExists);
-  
+
     const saltOrRounds = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
     const password = creatUserDto.password;
     const hash = await bcrypt.hash(password, saltOrRounds);
@@ -42,16 +46,16 @@ export class UserService {
       ...creatUserDto,
       password: hash,
       username: usernameWithNumber,
-      isEmailConfirmed:false,
+      isEmailConfirmed: false,
     });
-  
+
     console.log("Hash: ", hash);
     console.log("Are The Password and the hash are matched? : ", isMatch);
     console.log("The New User: ", newuser);
-  
+
     return await newuser.save();
   }
-  
+
   async loginUser(loginDto: LoginDto) {
     const user = await this.userRe.findOne({ email: loginDto.email });
     if (!user) {
@@ -82,16 +86,66 @@ export class UserService {
     return this.userRe.findByEmail(email);
   }
 
+
   UpdateUser(id: string, creatuserdto: CreatUserDto) {
     return this.userRe.update(id, creatuserdto);
   }
 
   async markEmailAsConfirmed(id: string) {
-    return this.userRe.update( id , {
+    return this.userRe.update(id, {
       isEmailConfirmed: true
     });
   }
 
+
+  @Cron("*/10 * * * * *")
+  async deleteUnconfirmedUsers() {
+    try {
+      //console.log("10s");
+      const deletedUsers = await this.userModel.deleteMany({ isEmailConfirmed: false });
+      if (deletedUsers.deletedCount > 0) {
+        console.log(`${deletedUsers.deletedCount} user(s) were deleted.`);
+        console.log('Deleted users:', deletedUsers);
+      }
+    } catch (error) {
+      console.error('Error deleting unconfirmed users:', error);
+    }
+  }
+
+  async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
+    return this.userRe.update(userId, {
+      twoFactorAuthenticationSecret: secret
+    });
+  }
+
+  async turnOnTwoFactorAuthentication(userId: string) {
+    return this.userRe.update(userId, {
+      isTwoFactorAuthenticationEnabled: true
+    });
+  }
+
+  async setCurrentRefreshToken(refreshToken: string, userId: string) {
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.userRe.update(userId, {
+      currentHashedRefreshToken
+    });
+  }
+
+  async sendPasswordResetEmail(email: string) {
+   const user = await this.userRe.findByEmail( email );
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetUrl = `https://boredguysCorp.com/reset-password?token = ${resetToken}`;
+    const text = resetUrl;
+    await this.userRe.update(user.id,{passResetToken : resetToken})
+    await this.emailService.sendMail({
+      to: email,
+      subject: 'Password Reset',
+      text,
+    })
+  }
 }
 
 

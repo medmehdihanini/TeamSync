@@ -14,9 +14,11 @@ import { AuthModule } from './uses-case/Auth/auth.module';
 import { EmailModule } from './uses-case/email/email.module';
 import * as Joi from 'joi'; 
 import { EmailConfirmationModule } from './uses-case/Auth/EmailConfirmation/emailConfirmation.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { TwoFactorAuthenticationModule } from './uses-case/Auth/TwoFactorAuthentication/twoFactorAuthentication.module';
 @Module({
   imports: [
+    TwoFactorAuthenticationModule,
     EmailConfirmationModule,
     EmailModule,
     MongoDataServiceModule,
@@ -36,6 +38,7 @@ import { EmailConfirmationModule } from './uses-case/Auth/EmailConfirmation/emai
         EMAIL_PASSWORD: Joi.string().required(),
       })
     }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [

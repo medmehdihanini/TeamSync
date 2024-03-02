@@ -13,7 +13,7 @@ export class DocumentService {
 
   constructor(private documentRepository: DocumentRepository,
               @InjectModel(User.name) private userModel: Model<User>,
-              @InjectModel(Documents.name) private Documentmodel: Model<Documents>,
+              @InjectModel(Documents.name) private Documentmodel: Model<Documents>, 
               private sharedService: SharedService
               ) {}
 

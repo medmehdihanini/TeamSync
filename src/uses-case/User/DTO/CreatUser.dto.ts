@@ -14,6 +14,7 @@ export class CreatUserSettings {
 }
 
 export class CreatUserDto {
+
   @IsString()
   @IsOptional()
   username: string;
