@@ -39,11 +39,20 @@ export class AuthService {
  } */
 
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string, user: any , userId: string}> {
+  async signIn(email: string, pass: string): Promise<{ 
+    access_token: string, 
+    user: any , 
+    userId: string , 
+    useremail:string, 
+    username: string, 
+    faSecret: string, 
+    isTwoFactorAuthenticationEnabled:Boolean,
+    isEmailConfirmed:Boolean
+  }> {
     const user = await this.userService.findUserByEmail(email);
-    if (user.isTwoFactorAuthenticationEnabled) {
+/*     if (user.isTwoFactorAuthenticationEnabled) {
       return;
-    }
+    } */
     const isMatch = await bcrypt.compare(pass, user?.password);
     if (!isMatch) {
       throw new UnauthorizedException();
@@ -53,7 +62,12 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
       user: user, 
-      userId: user.id
+      userId: user.id,
+      useremail:user.email,
+      username:user.username,
+      faSecret:user.twoFactorAuthenticationSecret,
+      isTwoFactorAuthenticationEnabled : user.isTwoFactorAuthenticationEnabled,
+      isEmailConfirmed: user.isEmailConfirmed
     };
   }
 
@@ -75,7 +89,7 @@ export class AuthService {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: `${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}s`
     });
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}`;
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}`; 
     return {
       cookie,
       token

@@ -59,8 +59,8 @@ export class EmailConfirmationService {
       throw new BadRequestException('Bad confirmation token');
     }
   }
-  public async resendConfirmationLink(userId: string) {
-    const user = await this.usersService.findOneUser(userId);
+  public async resendConfirmationLink(email: string) {
+    const user = await this.usersService.findUserByEmail(email);
     if (user.isEmailConfirmed) {
       throw new BadRequestException('Email already confirmed');
     }

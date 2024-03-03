@@ -75,9 +75,10 @@ export class UsersController {
   }
   @Public()
   @Post('reset-password')
-  async resetPassword(@Body()  { email, resetToken, newpassword }: { email: string; resetToken: string; newpassword: string }) 
+  async resetPassword(@Body()  { email, resetToken, password }: { email: string; resetToken: string; password: string }) 
   {
-    
+    console.log("email",email);
+    console.log("newpassword",password);
     const user = await this.usersService.findUserByEmail(email);
     if (!user) {
       throw new Error('User not found');
@@ -88,7 +89,7 @@ export class UsersController {
     if (user.passResetToken !== resetToken) {
       throw new Error('Invalid reset token');
     }
-    const hashedPassword = await this.hashPassword(newpassword)
+    const hashedPassword = await this.hashPassword(password)
     await this.userRe.update(user.id,{passResetToken : resetToken, password:hashedPassword})
 
     return { message: 'Password reset successful' };
@@ -97,6 +98,13 @@ export class UsersController {
   async hashPassword(password: string) {
     const saltOrRounds = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
     return await bcrypt.hash(password, saltOrRounds);
+}
+
+@Public()
+@Post('forgot-password')
+async forgotPassword(@Body('email') email: string) {
+  await this.usersService.sendPasswordResetEmail(email);
+  return { message: 'Password reset email sent' };
 }
 
 }

@@ -47,6 +47,9 @@ export class UserService {
       password: hash,
       username: usernameWithNumber,
       isEmailConfirmed: false,
+      isTwoFactorAuthenticationEnabled:false,
+      twoFactorAuthenticationSecret:'',
+      passResetToken:''
     });
 
     console.log("Hash: ", hash);
@@ -98,7 +101,7 @@ export class UserService {
   }
 
 
-  @Cron("*/10 * * * * *")
+  //@Cron("*/10 * * * * *")
   async deleteUnconfirmedUsers() {
     try {
       //console.log("10s");
@@ -137,7 +140,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     const resetToken = crypto.randomBytes(20).toString('hex');
-    const resetUrl = `https://boredguysCorp.com/reset-password?token = ${resetToken}`;
+    const resetUrl = `http://localhost:3000/auth/resetpw?token=${resetToken}&email=${email}`;
     const text = resetUrl;
     await this.userRe.update(user.id,{passResetToken : resetToken})
     await this.emailService.sendMail({

@@ -23,15 +23,18 @@ export class TwoFactorAuthenticationService {
       otpauthUrl
     }
   }
+  
 
   public async pipeQrCodeStream(stream: Response, otpauthUrl: string) {
     return toFileStream(stream, otpauthUrl);
   }
   
-  public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, user: User) {
+  public isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, fasecret: string) {
+    console.log("twoFactorAuthenticationCode:",twoFactorAuthenticationCode)
+    console.log("fasecret:",fasecret)
     return authenticator.verify({
       token: twoFactorAuthenticationCode,
-      secret: user.twoFactorAuthenticationSecret
+      secret: fasecret
     })
   } 
 }

@@ -35,38 +35,23 @@ export class TwoFactorAuthenticationController {
     return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);
   }
 
-  @Post('turn-on')
-  @HttpCode(200)
-  async turnOnTwoFactorAuthentication(
-    @Req() request: RequestWithUser,
-    @Body() { twoFactorAuthenticationCode }: TwoFactorAuthenticationCodeDto
-  ) {
-    const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-      twoFactorAuthenticationCode, request.user
-    );
-    if (!isCodeValid) {
-      throw new UnauthorizedException('Wrong authentication code');
-    }
-    await this.usersService.turnOnTwoFactorAuthentication(request.user.id.toString());
-  }
 
+
+  @Public()
   @Post('authenticate')
   @HttpCode(200)
   async authenticate(
-    @Req() request: RequestWithUser,
-    @Body() { twoFactorAuthenticationCode }: TwoFactorAuthenticationCodeDto
-  ) {
+    @Body() { twoFactorAuthenticationCode }: TwoFactorAuthenticationCodeDto,
+    @Body('fasecret') fasecret: string,
+  ): Promise<{ isAuthenticated: boolean }> {
     const isCodeValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
-      twoFactorAuthenticationCode, request.user
+      twoFactorAuthenticationCode, fasecret
     );
+
     if (!isCodeValid) {
       throw new UnauthorizedException('Wrong authentication code');
     }
 
-    const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(request.user.id, true);
-
-    request.res.setHeader('Set-Cookie', [accessTokenCookie]);
-
-    return request.user;
+    return { isAuthenticated: true };
   }
 }
