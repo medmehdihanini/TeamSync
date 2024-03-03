@@ -16,6 +16,14 @@ import * as Joi from 'joi';
 import { EmailConfirmationModule } from './uses-case/Auth/EmailConfirmation/emailConfirmation.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TwoFactorAuthenticationModule } from './uses-case/Auth/TwoFactorAuthentication/twoFactorAuthentication.module';
+import { AuthService } from './uses-case/Auth/auth.service';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './uses-case/Auth/auth.guard';
+
+
+
+
+
 @Module({
   imports: [
     TwoFactorAuthenticationModule,
@@ -41,7 +49,11 @@ import { TwoFactorAuthenticationModule } from './uses-case/Auth/TwoFactorAuthent
     ScheduleModule.forRoot(),
   ],
   controllers: [],
-  providers: [
+  providers: [ 
+    {
+    provide: APP_GUARD,
+    useClass: AuthGuard,
+  },
     SharedService,
   ],
 })
