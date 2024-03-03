@@ -9,6 +9,7 @@ import { SharedAssets } from "../../Schema/SharedAssets.Schema";
 import { createSharedDto } from "./DTO/CreateShared.dto";
 import { AccesLevel } from "src/Schema/Enum/AccesLevel";
 import { findSharedDto } from "./DTO/findSharedAssets.dto";
+import { updateSharedDto } from "./DTO/updateShared.dto";
 
 @Injectable()
 export class SharedAssetsService {
@@ -141,8 +142,34 @@ export class SharedAssetsService {
     }
 
 
+
+
+
   }
 
+
+
+  updateSharedAssets(updateSharedDto: updateSharedDto) {
+
+  }
+
+  async findSharedAssetsByUser({ Userid }: findSharedDto) {
+    const sharedAssets = await this.sharedModel.find({ userid: Userid }).exec();
+
+
+    const sharedFolderIds = sharedAssets
+      .filter(asset => asset.folderid)
+      .map(asset => asset.folderid);
+
+    const sharedDocumentIds = sharedAssets
+      .filter(asset => asset.docid)
+      .map(asset => asset.docid);
+
+    const folders = await this.folderModel.find({ _id: { $in: sharedFolderIds } }).exec();
+    const documents = await this.documentModel.find({ _id: { $in: sharedDocumentIds } }).exec();
+
+    return { folders, documents };
+  }
 
 
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Redirect } from "@nestjs/common";
 import { Public } from "../Custom Decorators/public.decorator";
 import { SharedAssetsService } from "../uses-case/Shared-Assets/shared-assets.service";
 import { createSharedDto } from "../uses-case/Shared-Assets/DTO/CreateShared.dto";
@@ -24,5 +24,17 @@ export class SharedAssetsController {
   ) {
     return this.SharedAssetsService.findFolderSharedAssets(findsharedassets);
   }
+
+
+
+
+  @Public()
+  @Get("findbyuser")
+  findSharedAssetsByUser(@Body() Userid:findSharedDto
+  ) {
+    return this.SharedAssetsService.findSharedAssetsByUser(Userid);
+  }
+
+
 
 }
