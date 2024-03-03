@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post } from "@nestjs/common";
 import { User } from "../Schema/User.Schema";
-import { UserService } from "../uses-case/User";
+import { UserRepository, UserService } from "../uses-case/User";
 import { CreatUserDto } from "../uses-case/User/DTO/CreatUser.dto";
 import { Public } from "src/Custom Decorators/public.decorator";
+import * as bcrypt from 'bcrypt';
 
 @Controller('users')
 export class UsersController {
 
-  constructor(private usersService: UserService) { }
+  constructor(
+    private usersService: UserService, 
+    private userRe :UserRepository
+    ) { }
   @Public()
   @Post('signup')
   async createUser(@Body() createUserDto: CreatUserDto) {
@@ -69,5 +73,38 @@ export class UsersController {
     if (!updateUser) throw new HttpException('user not found', 404);
     return updateUser;
   }
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body()  { email, resetToken, password }: { email: string; resetToken: string; password: string }) 
+  {
+    console.log("email",email);
+    console.log("newpassword",password);
+    const user = await this.usersService.findUserByEmail(email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    console.log("user.passResetToken",user.passResetToken);
+    console.log("resetToken",resetToken);
+
+    if (user.passResetToken !== resetToken) {
+      throw new Error('Invalid reset token');
+    }
+    const hashedPassword = await this.hashPassword(password)
+    await this.userRe.update(user.id,{passResetToken : resetToken, password:hashedPassword})
+
+    return { message: 'Password reset successful' };
+  }
+
+  async hashPassword(password: string) {
+    const saltOrRounds = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
+    return await bcrypt.hash(password, saltOrRounds);
+}
+
+@Public()
+@Post('forgot-password')
+async forgotPassword(@Body('email') email: string) {
+  await this.usersService.sendPasswordResetEmail(email);
+  return { message: 'Password reset email sent' };
+}
 
 }
