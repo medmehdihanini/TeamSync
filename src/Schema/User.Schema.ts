@@ -4,11 +4,11 @@ import { Document } from 'mongoose';
 import { Role } from "./Enum/Role";
 import { Settings } from "./Settings.Schema";
 import { Folder } from "./Folder.Schema";
-import { SharedAssets} from "./SharedAssets.Schema";
+import { SharedAssets } from "./SharedAssets.Schema";
 
 
 @Schema()
-export class User extends Document{
+export class User extends Document {
 
 
   @Prop({ required: false })
@@ -27,17 +27,31 @@ export class User extends Document{
   password: string;
 
   @Prop({ required: false })
-  Role:Role;
+  Role: Role;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Settings' })
   settings?: Settings;
 
+  @Prop({ required: false })
+  isEmailConfirmed: boolean;
 
- // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }], default: [] })
- // folders?: Folder[];
+  @Prop({ required: false })
+  twoFactorAuthenticationSecret?: string;
+
+  @Prop({ required: false })
+  isTwoFactorAuthenticationEnabled: boolean;
+
+  @Prop({ required: false })
+  currentHashedRefreshToken?: string;
+
+  @Prop({ required: false })
+  passResetToken: string;
+
+  // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }], default: [] })
+  // folders?: Folder[];
 
   //@Prop({ type:[{type:mongoose.Schema.Types.ObjectId, ref: 'SharedAssets' }],default:[]})
- // sharedassets?: SharedAssets[];
+  // sharedassets?: SharedAssets[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
