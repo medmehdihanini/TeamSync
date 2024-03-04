@@ -52,9 +52,15 @@ export class UserService {
       passResetToken:''
     });
 
+  
+
+  
+
+
     console.log("Hash: ", hash);
     console.log("Are The Password and the hash are matched? : ", isMatch);
     console.log("The New User: ", newuser);
+
 
     return await newuser.save();
   }
