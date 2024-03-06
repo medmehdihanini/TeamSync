@@ -24,7 +24,7 @@ export class CreatUserDto {
 
   @IsString()
   @IsOptional()
-  lastname: string; 
+  lastname: string;
 
   @IsString()
   @IsOptional()
@@ -46,4 +46,16 @@ export class CreatUserDto {
   @ValidateNested()
   @Type(() => CreatUserSettings)
   settings?: Settings;
+
+  @IsString()
+  @IsOptional()
+  twoFactorAuthenticationSecret: string
+
+  @IsBoolean()
+  @IsOptional()
+  isTwoFactorAuthenticationEnabled: boolean
+
+  @IsString()
+  @IsOptional()
+  passResetToken: string
 }

@@ -15,7 +15,6 @@ export class UserService {
   constructor(private readonly userRe: UserRepository, @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Settings.name) private SettingsModel: Model<Settings>
 
-
   ) {
   }
 
@@ -43,6 +42,9 @@ export class UserService {
       password: hash,
       username: usernameWithNumber,
       isEmailConfirmed:false,
+      twoFactorAuthenticationSecret:"",
+      isTwoFactorAuthenticationEnabled:false,
+      passResetToken:""
     });
   
     console.log("Hash: ", hash);
