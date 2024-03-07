@@ -54,4 +54,23 @@ export class SharedAssetsController {
   }
 
 
+
+
+
+
+
+
+
+  @Public()
+  @Get("findacces")
+  getAcceslevelbyUser(
+
+     @Body() findAccesLevler:findSharedDto
+
+  ) {
+    return this.SharedAssetsService.getAcceslevelbyUser(findAccesLevler);
+  }
+
+
+
 }
