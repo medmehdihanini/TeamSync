@@ -7,6 +7,8 @@ import { SharedAssets, SharedAssetsSchema } from "../../Schema/SharedAssets.Sche
 import { Documents, DocumentsSchema } from "../../Schema/Documents.Schema";
 import { Folder, FolderSchema } from "../../Schema/Folder.Schema";
 import { User, UserSchema } from "../../Schema/User.Schema";
+import {FolderRepository} from "../Folder/Folder-repo/folder.repository";
+import {DocumentRepository} from "../Documents/Document-Repo/document.repository";
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: SharedAssets.name, schema: SharedAssetsSchema }
@@ -16,7 +18,8 @@ import { User, UserSchema } from "../../Schema/User.Schema";
     { name: User.name, schema: UserSchema }
   ])],
   controllers: [SharedAssetsController],
-  providers: [SharedAssetsService, SharedAssetsRepository,
+  providers: [SharedAssetsService, SharedAssetsRepository,FolderRepository,
+    DocumentRepository,
     {
       provide: "SharedAssetsRepositoryInterface",
       useClass: SharedAssetsRepository
