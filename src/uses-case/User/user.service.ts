@@ -121,11 +121,25 @@ export class UserService {
     });
   }
 
-  async turnOnTwoFactorAuthentication(userId: string) {
-    return this.userRe.update(userId, {
-      isTwoFactorAuthenticationEnabled: true
+  async turnOnTwoFactorAuthentication(userId: string): Promise<boolean> {
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+      throw new Error('User not found');
+    }
+  
+
+    const updatedValue = !userDoc.isTwoFactorAuthenticationEnabled;
+  
+
+    await this.userRe.update(userId, {
+      isTwoFactorAuthenticationEnabled: updatedValue
     });
+  
+
+    return updatedValue;
   }
+  
+  
 
   async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
