@@ -19,6 +19,7 @@ import { TwoFactorAuthenticationModule } from './uses-case/Auth/TwoFactorAuthent
 import { AuthService } from './uses-case/Auth/auth.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './uses-case/Auth/auth.guard';
+import { ContentModule } from './uses-case/Content/content.module';
 
 
 
@@ -34,6 +35,7 @@ import { AuthGuard } from './uses-case/Auth/auth.guard';
     SharedServiceModule,
     CollaboorationlogModule,
     DocumentModule,
+    ContentModule,
     FolderModule,
     SharedAssetsModule,
     SettingsModule,

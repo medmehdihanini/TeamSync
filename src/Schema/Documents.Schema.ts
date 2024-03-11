@@ -10,11 +10,8 @@ export class Documents extends Document {
   @Prop({ required: false })
   title: string;
 
-
-  @Prop({ required: false })
-  content: string;
-
-
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Content' })
+  content: mongoose.Types.ObjectId;
 
   @Prop({ required: false , default: Date.now()})
   createat: Date;
@@ -36,20 +33,16 @@ export class Documents extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' })
   parentfolder?: string;
 
-
-
-
 }
 
 export const DocumentsSchema = SchemaFactory.createForClass(Documents);
 DocumentsSchema.pre<Documents>('save', function (next) {
   const currentDate = new Date();
-
   if (!this.createat) {
     this.createat = currentDate;
   }
-
   this.Updateat = currentDate;
-
   next();
 });
+
+
