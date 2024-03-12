@@ -58,6 +58,7 @@
     "passport-local": "^1.0.0",
     "qrcode": "^1.5.3",
     "react-email": "2.1.0",
+    "react-websocket": "^2.1.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20"
