@@ -8,15 +8,20 @@ import { ContentRepository } from './Content-Repo/content.repository';
 export class ContentService {
 
   constructor(@InjectModel(Content.name) private ContentModel: Model<Content>,
-              private Contentrrepo:ContentRepository,
-              ) {}
+              private Contentrrepo:ContentRepository) {}
 
   addContent(content:Content){
     return this.Contentrrepo.create(content);
   }
 
-  UpdateContent(content:Content) {
+  async UpdateContent(content:Content) {
+    console.log(content)
+    const existingContent = await this.Contentrrepo.findById(content.id);
+    if(existingContent){
       return this.Contentrrepo.update(content.id, content);
+    }
+    content._id=content.id
+    return this.Contentrrepo.create(content);
   }
 
   deleteContent(id:string) {
@@ -28,7 +33,7 @@ async deleteContentByDoc(id: string) {
   }
 
   getAllByDoc(id:string){
-    return this.Contentrrepo.find({Documentid: id});
+    return this.Contentrrepo.find({documentid: id});
   }
   
 

@@ -16,9 +16,12 @@ export class Data {
 
 @Schema()
 export class Content extends mongoose.Document {
-    
+
+  @Prop({ type: mongoose.Schema.Types.String, required: true }) // Change type to accept any format
+  _id: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Document' })
-  Documentid: mongoose.Types.ObjectId;
+  documentid: String;
 
   @Prop({ required: false })
   type: string;
