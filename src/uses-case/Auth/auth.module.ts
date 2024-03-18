@@ -11,40 +11,43 @@ import { EmailConfirmationService } from './EmailConfirmation/emailConfirmation.
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { EmailModule } from '../email/email.module';
+import { SettingsModule } from '../Settings/settings.module';
 
 
 @Module({
-    imports: 
-    [ 
-        UserModule,
-        PassportModule,
-        EmailModule,
-        JwtModule.register({
-            global: true,
-            secret: jwtConstants.secret,
-            signOptions: { expiresIn: '1d' },
-          }),
-          ConfigModule.forRoot({
-            validationSchema: Joi.object({
-              JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
-              JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
-              EMAIL_CONFIRMATION_URL: Joi.string().required(),
-              // ...
-            })
-          }),
+  imports:
+    [
+      UserModule,
+      PassportModule,
+      EmailModule,
+      SettingsModule,
+      JwtModule.register({
+        global: true,
+        secret: jwtConstants.secret,
+        signOptions: { expiresIn: '1d' },
+      }),
+      ConfigModule.forRoot({
+        validationSchema: Joi.object({
+          JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
+          JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+          EMAIL_CONFIRMATION_URL: Joi.string().required(),
+          // ...
+        })
+      }),
     ],
-    providers: 
+  providers:
     [
-        {
-            provide: APP_GUARD,
-            useClass: AuthGuard,
-          },
-        AuthService,
-        EmailConfirmationService
-     ],
-    controllers: 
+      {
+        provide: APP_GUARD,
+        useClass: AuthGuard,
+      },
+      AuthService,
+      EmailConfirmationService,
+
+    ],
+  controllers:
     [
-        AuthController
+      AuthController
     ]
 })
 export class AuthModule { }

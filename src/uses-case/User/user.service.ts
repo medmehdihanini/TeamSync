@@ -49,20 +49,23 @@ export class UserService {
       isEmailConfirmed: false,
       isTwoFactorAuthenticationEnabled:false,
       twoFactorAuthenticationSecret:'',
-      passResetToken:''
+      passResetToken:'',
+      
     });
 
-  
-
-  
-
-
+    const savedUser = await newuser.save();
+    const userSettings = new this.SettingsModel({
+      profilePicture: 'test.png', 
+    });
+    savedUser.settings = userSettings._id;
+    await savedUser.save();
+    await userSettings.save();
     console.log("Hash: ", hash);
     console.log("Are The Password and the hash are matched? : ", isMatch);
     console.log("The New User: ", newuser);
 
 
-    return await newuser.save();
+    return savedUser;
   }
 
   async loginUser(loginDto: LoginDto) {

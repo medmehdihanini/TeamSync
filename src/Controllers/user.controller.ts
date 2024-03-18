@@ -40,7 +40,7 @@ export class UsersController {
   }
 
 
-
+  @Public()
   @Get(':id')
   async GetUserById(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);

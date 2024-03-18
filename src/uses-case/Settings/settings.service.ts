@@ -6,4 +6,8 @@ export class SettingsService {
 
   constructor(private settingsRepository: SettingsRepository) {}
 
+
+  findOneSetting(id: string) {
+    return this.settingsRepository.findById(id);
+  }
 }

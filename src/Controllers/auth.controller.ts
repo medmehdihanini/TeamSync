@@ -8,6 +8,7 @@ import { CreatUserDto } from 'src/uses-case/User/DTO/CreatUser.dto';
 import { EmailConfirmationService } from 'src/uses-case/Auth/EmailConfirmation/emailConfirmation.service';
 import { UserService } from 'src/uses-case/User';
 import RequestWithUser from 'src/uses-case/Auth/requestWithUser.interface';
+import { SettingsService } from 'src/uses-case/Settings/settings.service';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -17,14 +18,16 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private readonly emailConfirmationService: EmailConfirmationService, 
-    private readonly userservice: UserService) { }
+    private readonly userservice: UserService,
+    ) { }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   signIn(@Body() signInDto: LoginDto) {
-    
+    const user = this.authService.signIn(signInDto.email, signInDto.password);
     return this.authService.signIn(signInDto.email, signInDto.password);
+
   }
   
   @Public()
