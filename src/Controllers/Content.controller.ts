@@ -20,31 +20,43 @@ return this.contentService.addContent(content);
 modifyContent(@Body() content:Content){
 return this.contentService.UpdateContent(content);
 }
-@Public()
+
 @Public()
   @Delete('deleteone/:id')
   async deleteContent(@Param('id') id: string) {
     return this.contentService.deleteContent(id);
   }
-
   @Public()
+  @Delete('deleteAllcontent')
+  async deleteAlldocs(@Body() ids: string[]) {
+    console.log(ids)
+    return this.contentService.Delteallcontent(ids);
+  }
+
 @Public()
   @Delete('deleteByDoc/:id')
   async deleteContentByDoc(@Param('id') id: string) {
     return this.contentService.deleteContentByDoc(id);
   }
 
-  @Public()
+
   @Public()
   @Get('getAllContentByDocId/:id')
   async getAllContentByDocId(@Param('id') id: string) {
     return this.contentService.getAllByDoc(id);
   }
 
-  @Public()
+
   @Public()
   @Get('getContentById/:id')
   async getContentById(@Param('id') id: string) {
     return this.contentService.getcontentById(id);
   }
+
+  @Public()
+  @Patch('move/:id/:newPos')
+  async moveContent(@Param('id') id: string, @Param('newPos') newPos: number) {
+    console.log(id, newPos)
+  return this.contentService.decrementRange(id, newPos);
+}
 }

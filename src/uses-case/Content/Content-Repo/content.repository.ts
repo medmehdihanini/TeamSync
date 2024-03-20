@@ -20,12 +20,29 @@ export class ContentRepository extends BaseAbstractRepository<Content> implement
   }
 
 
+  async incrementAllPos(pos:number) {
+    await this.contentModel.updateMany({ position: { $gte: pos } }, { $inc: { position: 1 } });
+  }
 
 
 
-
-
-
+  async decrementRange(startPos: number, endPos: number, num: number) {
+    console.log(startPos, endPos, num);
+    await this.contentModel.updateMany(
+      {
+        position: {
+          $gte: startPos,
+          $lte: endPos 
+        }
+      },
+      {
+        $inc: {
+          position: num
+        }
+      }
+    );
+  
+  }
 
 
 

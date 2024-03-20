@@ -24,6 +24,9 @@ export class Content extends mongoose.Document {
   documentid: String;
 
   @Prop({ required: false })
+  position: number;
+
+  @Prop({ required: false })
   type: string;
 
   @Prop({ required: false })
