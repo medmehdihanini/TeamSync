@@ -8,6 +8,7 @@ import { Folder } from 'src/Schema/Folder.Schema';
 import { UserRepository } from '../User';
 import { FolderRepository } from '../Folder/Folder-repo/folder.repository';
 import { SimpleDocDto } from './DTO/SimpleDoc.dto';
+import { ContentService } from '../Content/content.service';
 import { SimpleFolderDto } from '../Folder/DTO/SimpleFolder.dto';
 import { SharedService } from 'src/shared/shared-service/shared.service';
 
@@ -15,15 +16,16 @@ import { SharedService } from 'src/shared/shared-service/shared.service';
 export class DocumentService {
 
   constructor(
-    private documentRepository: DocumentRepository,
-    @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(Documents.name) private Documentmodel: Model<Documents>, 
-    private sharedService: SharedService,
-    @InjectModel(Folder.name) private folderModel: Model<Folder>,
-    private userrepo: UserRepository,
-    private folderrepo: FolderRepository
-  ) {}
-  
+              private documentRepository: DocumentRepository,
+              @InjectModel(User.name) private userModel: Model<User>,
+              @InjectModel(Documents.name) private Documentmodel: Model<Documents>, 
+              private sharedService: SharedService,
+              @InjectModel(Folder.name) private folderModel: Model<Folder>,
+              private userrepo:UserRepository,
+              private folderrepo:FolderRepository
+              ) {}
+
+
 
    async addDocument(document:Documents){
     document._id=null
