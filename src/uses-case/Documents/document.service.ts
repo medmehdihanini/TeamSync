@@ -8,8 +8,9 @@ import { Folder } from 'src/Schema/Folder.Schema';
 import { UserRepository } from '../User';
 import { FolderRepository } from '../Folder/Folder-repo/folder.repository';
 import { SimpleDocDto } from './DTO/SimpleDoc.dto';
-import { SharedService } from 'src/shared/shared-service/shared.service';
 import { ContentService } from '../Content/content.service';
+import { SimpleFolderDto } from '../Folder/DTO/SimpleFolder.dto';
+import { SharedService } from 'src/shared/shared-service/shared.service';
 
 @Injectable()
 export class DocumentService {
@@ -23,6 +24,7 @@ export class DocumentService {
               private userrepo:UserRepository,
               private folderrepo:FolderRepository
               ) {}
+
 
 
    async addDocument(document:Documents){
