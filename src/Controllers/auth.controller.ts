@@ -2,13 +2,10 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Get, Request, Req, UseGua
 import { AuthService } from 'src/uses-case/Auth/auth.service';
 import { LoginDto } from 'src/uses-case/User/DTO/Login.dto';
 import { Public } from 'src/Custom Decorators/public.decorator';
-import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
 import { CreatUserDto } from 'src/uses-case/User/DTO/CreatUser.dto';
 import { EmailConfirmationService } from 'src/uses-case/Auth/EmailConfirmation/emailConfirmation.service';
 import { UserService } from 'src/uses-case/User';
-import RequestWithUser from 'src/uses-case/Auth/requestWithUser.interface';
-import { SettingsService } from 'src/uses-case/Settings/settings.service';
+
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
