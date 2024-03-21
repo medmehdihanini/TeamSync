@@ -1,5 +1,5 @@
 import { Post, Get, Param, Res, Controller, UseInterceptors, UseGuards, UploadedFiles, HttpException, HttpStatus, UploadedFile } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import {  FilesInterceptor } from '@nestjs/platform-express';
 import { ApiCreatedResponse, ApiConsumes } from '@nestjs/swagger';
 import { Public } from 'src/Custom Decorators/public.decorator';
 import { FileService } from 'src/uses-case/FileUpload/file.service';
