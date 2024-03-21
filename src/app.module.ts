@@ -12,7 +12,7 @@ import { SettingsModule } from './uses-case/Settings/settings.module';
 import { VersionHistoryModule } from './uses-case/Version-History/version-history.module';
 import { AuthModule } from './uses-case/Auth/auth.module';
 import { EmailModule } from './uses-case/email/email.module';
-import * as Joi from 'joi'; 
+import * as Joi from 'joi';
 import { EmailConfirmationModule } from './uses-case/Auth/EmailConfirmation/emailConfirmation.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TwoFactorAuthenticationModule } from './uses-case/Auth/TwoFactorAuthentication/twoFactorAuthentication.module';
@@ -20,6 +20,9 @@ import { AuthService } from './uses-case/Auth/auth.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './uses-case/Auth/auth.guard';
 import { ContentModule } from './uses-case/Content/content.module';
+
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { OpenaiModule } from './uses-case/chatgpt/openai.module';
 
 
 
@@ -41,6 +44,10 @@ import { ContentModule } from './uses-case/Content/content.module';
     SettingsModule,
     VersionHistoryModule,
     AuthModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    // Add Event emitter module to use it globally
+    EventEmitterModule.forRoot(),
+    OpenaiModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         EMAIL_SERVICE: Joi.string().required(),
@@ -51,11 +58,11 @@ import { ContentModule } from './uses-case/Content/content.module';
     ScheduleModule.forRoot(),
   ],
   controllers: [],
-  providers: [ 
+  providers: [
     {
-    provide: APP_GUARD,
-    useClass: AuthGuard,
-  },
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
     SharedService,
   ],
 })
