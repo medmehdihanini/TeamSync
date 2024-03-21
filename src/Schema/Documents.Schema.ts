@@ -10,8 +10,8 @@ export class Documents extends Document {
   @Prop({ required: false })
   title: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Content' })
-  content: mongoose.Types.ObjectId;
+  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Content' })
+  // content: mongoose.Types.ObjectId;
 
   @Prop({ required: false , default: Date.now()})
   createat: Date;
