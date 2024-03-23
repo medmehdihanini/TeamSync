@@ -22,7 +22,6 @@ import { AuthGuard } from './uses-case/Auth/auth.guard';
 import { ContentModule } from './uses-case/Content/content.module';
 import { FilesModule } from './uses-case/FileUpload/file.module';
 
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { OpenaiModule } from './uses-case/chatgpt/openai.module';
 
 
@@ -46,8 +45,6 @@ import { OpenaiModule } from './uses-case/chatgpt/openai.module';
     VersionHistoryModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    // Add Event emitter module to use it globally
-    EventEmitterModule.forRoot(),
     OpenaiModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
