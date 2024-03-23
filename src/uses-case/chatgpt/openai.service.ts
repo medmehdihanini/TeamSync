@@ -18,10 +18,6 @@ export class OpenaiService {
     this.geminiProVision = this.genAI.getGenerativeModel({ model: "gemini-pro-vision" });
   }
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   async getPromptResponse(prompt: string): Promise<string> {
     const result = await this.geminiPro.generateContent(prompt);
     const response = await result.response;
@@ -29,7 +25,7 @@ export class OpenaiService {
     return text;
   }
 
-/*   async getPromoptResponseWithImages(prompt: string, images: Array<Express.Multer.File>): Promise<string> {
+   async getPromoptResponseWithImages(prompt: string, images: Array<Express.Multer.File>): Promise<string> {
 
     const imageParts = [];
     for (let image of images) {
@@ -40,7 +36,7 @@ export class OpenaiService {
     const text = response.text();
     console.log(text);
     return text;
-  } */
+  } 
 
   // Converts local file information to a GoogleGenerativeAI.Part object.
   fileToGenerativePart(path: string, mimeType: string) {
