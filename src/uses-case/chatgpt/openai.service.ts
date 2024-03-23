@@ -6,8 +6,6 @@ import * as fs from "fs";
 
 @Injectable()
 export class OpenaiService {
-
-
   private genAI: any;
   private geminiPro: any;
   private geminiProVision: any;
@@ -25,7 +23,7 @@ export class OpenaiService {
     return text;
   }
 
-   async getPromoptResponseWithImages(prompt: string, images: Array<Express.Multer.File>): Promise<string> {
+  async getPromoptResponseWithImages(prompt: string, images: Array<Express.Multer.File>): Promise<string> {
 
     const imageParts = [];
     for (let image of images) {
@@ -36,7 +34,14 @@ export class OpenaiService {
     const text = response.text();
     console.log(text);
     return text;
-  } 
+  }
+
+  async getImageResponse(prompt: string): Promise<string> {
+    const result = await this.geminiProVision.generateImage(prompt);
+    const response = await result.response;
+    const imageUrl = response.imageUrl();
+    return imageUrl;
+  }
 
   // Converts local file information to a GoogleGenerativeAI.Part object.
   fileToGenerativePart(path: string, mimeType: string) {
@@ -47,5 +52,7 @@ export class OpenaiService {
       },
     };
   }
+
+
 
 }
