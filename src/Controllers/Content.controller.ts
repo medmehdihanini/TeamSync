@@ -56,7 +56,6 @@ return this.contentService.UpdateContent(content);
   @Public()
   @Patch('move/:id/:newPos')
   async moveContent(@Param('id') id: string, @Param('newPos') newPos: number) {
-    console.log(id, newPos)
   return this.contentService.decrementRange(id, newPos);
 }
 }
