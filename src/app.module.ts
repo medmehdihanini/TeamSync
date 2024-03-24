@@ -21,6 +21,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './uses-case/Auth/auth.guard';
 import { ContentModule } from './uses-case/Content/content.module';
 import { FilesModule } from './uses-case/FileUpload/file.module';
+import { DesignContentModule } from './uses-case/DesignContent/designContent.module';
 
 import { OpenaiModule } from './uses-case/chatgpt/openai.module';
 
@@ -55,6 +56,7 @@ import { OpenaiModule } from './uses-case/chatgpt/openai.module';
     }),
     ScheduleModule.forRoot(),
     FilesModule,
+    DesignContentModule
   ],
   controllers: [],
   providers: [
