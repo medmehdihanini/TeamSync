@@ -1,19 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import OpenAI from 'openai';
 import { Public } from 'src/Custom Decorators/public.decorator';
 import { PromptBodyWithImages, PromptBody } from 'src/uses-case/chatgpt/dto/prompt.dto';
-
-
-
 import { OpenaiService } from 'src/uses-case/chatgpt/openai.service';
-
+import { Response } from 'express';
 
 @Controller('openai')
 export class OpenaiController {
   constructor(private openaiService: OpenaiService) { }
-
-
 
   @Public()
   @Post("prompt")
@@ -32,3 +26,6 @@ export class OpenaiController {
   }
 
 }
+
+
+
