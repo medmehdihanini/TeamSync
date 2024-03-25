@@ -50,7 +50,7 @@ export class UserService {
       isTwoFactorAuthenticationEnabled:false,
       twoFactorAuthenticationSecret:'',
       passResetToken:'',
-      
+      profilePicture:'660036990442903a5ff041ff'
     });
 
     const savedUser = await newuser.save();
@@ -148,7 +148,14 @@ export class UserService {
     return updatedValue;
   }
   
-  
+  async updateUserProfilePicture(userId: string, ppid: string){
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+      throw new Error('User not found');
+    }
+    const updatePicture = await this.userRe.update(userId, {profilePicture : ppid})
+    return updatePicture;
+  }
 
   async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);

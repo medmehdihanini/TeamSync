@@ -10,9 +10,9 @@ import * as bcrypt from 'bcrypt';
 export class UsersController {
 
   constructor(
-    private usersService: UserService, 
-    private userRe :UserRepository
-    ) { }
+    private usersService: UserService,
+    private userRe: UserRepository
+  ) { }
   @Public()
   @Post('signup')
   async createUser(@Body() createUserDto: CreatUserDto) {
@@ -50,8 +50,8 @@ export class UsersController {
       throw new HttpException('user not foundt', 404);
     }
     return findUser;
-  } 
-  
+  }
+
   @Public()
   @Get('email/:email')
   async getUserByEmail(@Param('email') email: string) {
@@ -75,36 +75,51 @@ export class UsersController {
   }
   @Public()
   @Post('reset-password')
-  async resetPassword(@Body()  { email, resetToken, password }: { email: string; resetToken: string; password: string }) 
-  {
-    console.log("email",email);
-    console.log("newpassword",password);
+  async resetPassword(@Body() { email, resetToken, password }: { email: string; resetToken: string; password: string }) {
+    console.log("email", email);
+    console.log("newpassword", password);
     const user = await this.usersService.findUserByEmail(email);
     if (!user) {
       throw new Error('User not found');
     }
-    console.log("user.passResetToken",user.passResetToken);
-    console.log("resetToken",resetToken);
+    console.log("user.passResetToken", user.passResetToken);
+    console.log("resetToken", resetToken);
 
     if (user.passResetToken !== resetToken) {
       throw new Error('Invalid reset token');
     }
     const hashedPassword = await this.hashPassword(password)
-    await this.userRe.update(user.id,{passResetToken : resetToken, password:hashedPassword})
+    await this.userRe.update(user.id, { passResetToken: resetToken, password: hashedPassword })
 
     return { message: 'Password reset successful' };
   }
 
   async hashPassword(password: string) {
+    console.log("Password:", password);
     const saltOrRounds = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
+    const hash = await bcrypt.hash(password, saltOrRounds);
+    const isMatch = await bcrypt.compare(password, hash);
+    console.log('isMatch:', isMatch)
     return await bcrypt.hash(password, saltOrRounds);
-}
+  }
 
-@Public()
-@Post('forgot-password')
-async forgotPassword(@Body('email') email: string) {
-  await this.usersService.sendPasswordResetEmail(email);
-  return { message: 'Password reset email sent' };
-}
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    await this.usersService.sendPasswordResetEmail(email);
+    return { message: 'Password reset email sent' };
+  }
+
+  @Public()
+  @Post('update-profile-picture') // Define the POST endpoint
+  async updateProfilePicture(@Body() requestBody: { userId: string, profilePictureId: string }) {
+    const { userId, profilePictureId } = requestBody;
+    try {
+      const updatedUser = await this.usersService.updateUserProfilePicture(userId, profilePictureId);
+      return { success: true, user: updatedUser };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
 
 }
