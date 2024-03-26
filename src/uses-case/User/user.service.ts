@@ -103,6 +103,11 @@ export class UserService {
     return this.userRe.update(id, creatuserdto);
   }
 
+  UpdateUser2(id: string, firstname: string, lastname: string) {
+    return this.userRe.updateUserFirstnameAndLastname(id, firstname, lastname);
+  }
+
+
   async markEmailAsConfirmed(id: string) {
     return this.userRe.update(id, {
       isEmailConfirmed: true

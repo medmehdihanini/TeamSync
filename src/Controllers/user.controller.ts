@@ -122,4 +122,24 @@ export class UsersController {
     }
   }
 
+  @Post(':id/update-name')
+  async updateUserFirstnameAndLastname(
+    @Param('id') id: string,
+    @Body('firstname') firstname: string,
+    @Body('lastname') lastname: string,
+  ) {
+    try {
+      const updatedUser = await this.usersService.UpdateUser2(id, firstname, lastname);
+      if (updatedUser) {
+        return {
+          message: 'User firstname and lastname updated successfully',
+          user: updatedUser,
+        };
+      } else {
+        return { message: 'User not found' };
+      }
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
 }
