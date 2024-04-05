@@ -24,10 +24,7 @@ export class FolderController {
   @Public()
   @Delete('deletefolder/:id')
   async DeleteFolder(@Param('id') id: string) {
-    const isValid = mongoose.Types.ObjectId.isValid(id);
-    if (!isValid) throw new HttpException('invalide ID', 400);
-    const deletefolder= await this.folderService.DelteFolder(id);
-    if(!deletefolder) throw new HttpException('user not found', 404);
+    const deletefolder= await this.folderService.deleteFolder(id);
     return deletefolder;
   }
 
@@ -35,7 +32,7 @@ export class FolderController {
   @Public()
   @Delete('deleteAllfolder')
   async DeleteallFolders(@Body() ids: string[]) {
-    return this.folderService.DelteallFolder(ids);
+    return this.folderService.deleteSelectedFolder(ids);
   }
 
   
@@ -99,7 +96,7 @@ return await this.folderService.getAllby(parentId, name, createdBy, createdDate,
   @Delete('deleteselctedfolder/:id')
   async deleteSelcetedFolder(@Param('id') id: string) {
     const idArray=id.split(",")
-    return this.folderService.deleteSelcetedFolder(idArray);
+    return this.folderService.deleteSelectedFolder(idArray);
 
   }
 }
