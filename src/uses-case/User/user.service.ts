@@ -49,20 +49,23 @@ export class UserService {
       isEmailConfirmed: false,
       isTwoFactorAuthenticationEnabled:false,
       twoFactorAuthenticationSecret:'',
-      passResetToken:''
+      passResetToken:'',
+      
     });
 
-  
-
-  
-
-
+    const savedUser = await newuser.save();
+    const userSettings = new this.SettingsModel({
+      profilePicture: 'test.png', 
+    });
+    savedUser.settings = userSettings._id;
+    await savedUser.save();
+    await userSettings.save();
     console.log("Hash: ", hash);
     console.log("Are The Password and the hash are matched? : ", isMatch);
     console.log("The New User: ", newuser);
 
 
-    return await newuser.save();
+    return savedUser;
   }
 
   async loginUser(loginDto: LoginDto) {
@@ -127,11 +130,25 @@ export class UserService {
     });
   }
 
-  async turnOnTwoFactorAuthentication(userId: string) {
-    return this.userRe.update(userId, {
-      isTwoFactorAuthenticationEnabled: true
+  async turnOnTwoFactorAuthentication(userId: string): Promise<boolean> {
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+      throw new Error('User not found');
+    }
+  
+
+    const updatedValue = !userDoc.isTwoFactorAuthenticationEnabled;
+  
+
+    await this.userRe.update(userId, {
+      isTwoFactorAuthenticationEnabled: updatedValue
     });
+  
+
+    return updatedValue;
   }
+  
+  
 
   async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);

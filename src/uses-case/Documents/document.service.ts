@@ -1,27 +1,34 @@
-import {HttpException, Injectable} from '@nestjs/common';
-import {DocumentRepository} from './Document-Repo/document.repository';
-import {InjectModel} from "@nestjs/mongoose";
-import {User} from "../../Schema/User.Schema";
-import mongoose, {Model, Types} from "mongoose";
-import {Documents} from "../../Schema/Documents.Schema";
-import {Folder} from 'src/Schema/Folder.Schema';
-import {UserRepository} from '../User';
-import {FolderRepository} from '../Folder/Folder-repo/folder.repository';
-import {SimpleDocDto} from './DTO/SimpleDoc.dto';
-import {SharedService} from "../../shared/shared-service/shared.service";
+
+import { HttpException, Injectable } from '@nestjs/common';
+import { DocumentRepository } from './Document-Repo/document.repository';
+import { InjectModel } from "@nestjs/mongoose";
+import { User } from "../../Schema/User.Schema";
+import mongoose, { Model, Types } from "mongoose";
+import { Documents } from "../../Schema/Documents.Schema";
+import { Folder } from 'src/Schema/Folder.Schema';
+import { UserRepository } from '../User';
+import { FolderRepository } from '../Folder/Folder-repo/folder.repository';
+import { SimpleDocDto } from './DTO/SimpleDoc.dto';
+import { ContentService } from '../Content/content.service';
+import { SimpleFolderDto } from '../Folder/DTO/SimpleFolder.dto';
+import { SharedService } from 'src/shared/shared-service/shared.service';
 
 @Injectable()
 export class DocumentService {
 
-    constructor(private documentRepository: DocumentRepository,
-                @InjectModel(User.name) private userModel: Model<User>,
-                @InjectModel(Documents.name) private Documentmodel: Model<Documents>,
-                private sharedService: SharedService,
-                @InjectModel(Folder.name) private folderModel: Model<Folder>,
-                private userrepo: UserRepository,
-                private folderrepo: FolderRepository
-    ) {
-    }
+
+  constructor(
+              private documentRepository: DocumentRepository,
+              @InjectModel(User.name) private userModel: Model<User>,
+              @InjectModel(Documents.name) private Documentmodel: Model<Documents>, 
+              private sharedService: SharedService,
+              @InjectModel(Folder.name) private folderModel: Model<Folder>,
+              private userrepo:UserRepository,
+              private folderrepo:FolderRepository
+              ) {}
+
+
+
 
 
     async addDocument(document: Documents) {

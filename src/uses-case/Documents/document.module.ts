@@ -13,7 +13,7 @@ import { FolderRepository } from '../Folder/Folder-repo/folder.repository';
 @Module({
   imports:[    MongooseModule.forFeature([{ name: Documents.name, schema: DocumentsSchema },
     { name: User.name, schema: UserSchema },{ name: Folder.name, schema: FolderSchema }]),
-  SharedServiceModule,
+  SharedServiceModule
   
   
   ],
