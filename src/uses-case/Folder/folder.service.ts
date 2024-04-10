@@ -63,15 +63,18 @@ export class FolderService {
   }
 
 
-  DelteFolder(id: string) {
-    return this.folderRepository.delete(id);
+  async deleteFolder(id: string) {
+    await this.folderRepository.delete(id);
+    const subfolders = await this.folderRepository.find({ parentfolder: id });
+    if (subfolders.length > 0) {
+      for (const subfolder of subfolders) {
+        await this.deleteFolder(subfolder.id);
+      }
+    }
   }
 
-  DelteallFolder(ids: string[]) {
-    return Promise.all(ids.map(async (id) => {
-    if (!mongoose.Types.ObjectId.isValid(id)) throw new HttpException('invalide ID', 400);
-      this.folderRepository.delete(id)}));
-  }
+
+
 
   FindAllFolder() {
     return this.folderRepository.findAll();
@@ -150,20 +153,28 @@ export class FolderService {
   }
 
 
-  deleteSelcetedFolder(id: string[]) {
-    for (let i = 0; i < id.length; i++) {
-
-        this.folderRepository.delete(id[i]);
-
+  async deleteSelectedFolder(ids: string[]) {
+    for (let i = 0; i < ids.length; i++) {
+      await this.deleteFolderRecursive(ids[i]);
     }
+  }
 
+  async deleteFolderRecursive(folderId: string) {
+    await this.folderRepository.delete(folderId);
+
+    const subfolders = await this.folderRepository.find({ parentfolder: folderId });
+
+    if (subfolders.length > 0) {
+      for (const subfolder of subfolders) {
+        await this.deleteFolderRecursive(subfolder.id);
+      }
+    }
   }
 
 
 
-  sharedFolder(id: string, user: string) {
 
-  }
+
 
 
 }

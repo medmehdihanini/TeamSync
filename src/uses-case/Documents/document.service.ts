@@ -1,3 +1,4 @@
+
 import { HttpException, Injectable } from '@nestjs/common';
 import { DocumentRepository } from './Document-Repo/document.repository';
 import { InjectModel } from "@nestjs/mongoose";
@@ -15,6 +16,7 @@ import { SharedService } from 'src/shared/shared-service/shared.service';
 @Injectable()
 export class DocumentService {
 
+
   constructor(
               private documentRepository: DocumentRepository,
               @InjectModel(User.name) private userModel: Model<User>,
@@ -27,158 +29,159 @@ export class DocumentService {
 
 
 
-   async addDocument(document:Documents){
-    document._id=null
-    if(document.parentfolder!=null){
-      if(Types.ObjectId.isValid(document.parentfolder.toString())){
-        document.parentfolder=new  Types.ObjectId(document.parentfolder).toString();
-      }else{
-        let folder=new this.folderModel();
-        folder.foldername=document.parentfolder
-        folder.createdby=document.createdby
-        const newfolder=await folder.save()
-        document.parentfolder=newfolder._id
-      }
+
+
+    async addDocument(document: Documents) {
+        document._id = null
+        if (document.parentfolder != null) {
+            if (Types.ObjectId.isValid(document.parentfolder.toString())) {
+                document.parentfolder = new Types.ObjectId(document.parentfolder).toString();
+            } else {
+                let folder = new this.folderModel();
+                folder.foldername = document.parentfolder
+                folder.createdby = document.createdby
+                const newfolder = await folder.save()
+                document.parentfolder = newfolder._id
+            }
+        }
+        document.createdby = new Types.ObjectId(document.createdby).toString()
+        return this.documentRepository.create(document);
     }
-    document.createdby= new  Types.ObjectId(document.createdby).toString()
-    return this.documentRepository.create(document);
-  }
 
-  getOne(id:string){
-    return this.documentRepository.findById(id);
-  }
-
-  delete(id:string){
-    return this.documentRepository.delete(id);
-  }
-
-  update(document:Documents){
-    return this.documentRepository.update(document._id,document);
-  }
-
-  getAll(){
-    return this.documentRepository.findAll()
-  }
-
-  async getAllby(parentId: string, name:string, createdBy: string, createdDate: Date,sortupdated:string, lastUpdate: Date, page: number = 1, limit: number = 10) {
-    const query: any = {};
-    if (parentId && Types.ObjectId.isValid(parentId)) {
-      query.parentfolder = new  Types.ObjectId(parentId);
-    }else if(name!=""){
-      query.parentfolder=null;
+    getOne(id: string) {
+        return this.documentRepository.findById(id);
     }
-  if (createdBy && Types.ObjectId.isValid(createdBy)) {
-    query.createdby = new  Types.ObjectId(createdBy);
-  }
-  if (createdDate) {
-    query.createat = { $gte: createdDate };
-  }
-  if (lastUpdate) {
-    query.Updateat = { $lte: lastUpdate };
-  }
-  if(name){
-    query.title = { $regex: `^${name}`, $options: 'i' };
+
+    delete(id: string) {
+        return this.documentRepository.delete(id);
     }
-  try {
-    const result = await this.documentRepository.findAllWithPagination(query,sortupdated, page, limit);
-    const totaldata = result.totaldata;
-    const totalPages = Math.ceil(totaldata / limit);
-    const data: SimpleDocDto[] = result.data.map((document: any) => {
-      const simpleDocDto: SimpleDocDto = new SimpleDocDto();
-      simpleDocDto.id = document.id;
-      simpleDocDto.title = document.title;
-      simpleDocDto.createdby = document.createdby;
-      simpleDocDto.createdat = document.createat;
-      simpleDocDto.updatedat = document.Updateat;
-      return simpleDocDto;
-    });
-    return {
-      data,
-      currentPage: page,
-      totalPages,
-      totaldata
-    };
-  } catch (error) {
-    throw new Error(`Error retrieving documents: ${error}`);
-  }
-  }
 
-
-
-
-  async getAllDocAndFolderby(parentId: string, name:string, createdBy: string,sortupdated:string, createdDate: Date, lastUpdate: Date, page: number = 1, limit: number = 10) {
-    const query: any = {};
-    limit=limit/2
-  if (parentId && Types.ObjectId.isValid(parentId)) {
-    query.parentfolder = new  Types.ObjectId(parentId);
-  }else if(!name) {
-    query.parentfolder=null;
-  }
-  if (createdBy && Types.ObjectId.isValid(createdBy)) {
-    query.createdby = new  Types.ObjectId(createdBy);
-  }
-  if (createdDate) {
-    query.createat = { $gte: createdDate };
-  }
-  if (lastUpdate) {
-    query.Updateat = { $lte: lastUpdate };
-  }
-  if(name){
-    query.foldername = { $regex: `^${name}`, $options: 'i' };
-  }
-
-  let folderResult = await this.folderrepo.findAllWithPagination(query,sortupdated, page, limit);
-  const data: SimpleDocDto[] = folderResult.data.map((folder: any) => {
-    const simplefolderDto: SimpleDocDto = new SimpleDocDto();
-    simplefolderDto.id = folder.id;
-    simplefolderDto.title = folder.foldername;
-    simplefolderDto.createdby = folder.createdby;
-    simplefolderDto.createdat = folder.createdat;
-    simplefolderDto.updatedat = folder.Updateat;
-    simplefolderDto.type="folder"
-    return simplefolderDto;
-  });
-  if(name){
-    query.title = { $regex: `^${name}`, $options: 'i' };
-    query.foldername = null
+    update(document: Documents) {
+        return this.documentRepository.update(document._id, document);
     }
-  try {
-    let result = await this.documentRepository.findAllWithPagination(query,sortupdated, page, limit);
-    const totaldata = result.totaldata+folderResult.totaldata;
 
-    let totalPages = Math.ceil((totaldata) / limit*2);
-    if(folderResult.data.length==0){
-      totalPages = Math.ceil((totaldata) / limit);
-   }
-   
-   if(result.data.length==0){
-    totalPages = Math.ceil((totaldata) / limit);
-   }
+    getAll() {
+        return this.documentRepository.findAll()
+    }
 
-     result.data.map((document: any) => {
-      const simpleDocDto: SimpleDocDto = new SimpleDocDto();
-      simpleDocDto.id = document.id;
-      simpleDocDto.title = document.title;
-      simpleDocDto.createdby = document.createdby;
-      simpleDocDto.createdat = document.createat;
-      simpleDocDto.updatedat = document.Updateat;
-      data.push(simpleDocDto)
-      return simpleDocDto;
-    });
-    return {
-      data,
-      currentPage: page,
-      totalPages,
-      totaldata
-    };
-  } catch (error) {
-    throw new Error(`Error retrieving documents: ${error}`);
-  }
-  }
-  
-  Deltealldocs(ids: string[]) {
-    return Promise.all(ids.map(async (id) => {
-    if (!mongoose.Types.ObjectId.isValid(id)) throw new HttpException('invalide ID', 400);
-      this.documentRepository.delete(id)}));
-  }
+    async getAllby(parentId: string, name: string, createdBy: string, createdDate: Date, sortupdated: string, lastUpdate: Date, page: number = 1, limit: number = 10) {
+        const query: any = {};
+        if (parentId && Types.ObjectId.isValid(parentId)) {
+            query.parentfolder = new Types.ObjectId(parentId);
+        } else if (name != "") {
+            query.parentfolder = null;
+        }
+        if (createdBy && Types.ObjectId.isValid(createdBy)) {
+            query.createdby = new Types.ObjectId(createdBy);
+        }
+        if (createdDate) {
+            query.createat = {$gte: createdDate};
+        }
+        if (lastUpdate) {
+            query.Updateat = {$lte: lastUpdate};
+        }
+        if (name) {
+            query.title = {$regex: `^${name}`, $options: 'i'};
+        }
+        try {
+            const result = await this.documentRepository.findAllWithPagination(query, sortupdated, page, limit);
+            const totaldata = result.totaldata;
+            const totalPages = Math.ceil(totaldata / limit);
+            const data: SimpleDocDto[] = result.data.map((document: any) => {
+                const simpleDocDto: SimpleDocDto = new SimpleDocDto();
+                simpleDocDto.id = document.id;
+                simpleDocDto.title = document.title;
+                simpleDocDto.createdby = document.createdby;
+                simpleDocDto.createdat = document.createat;
+                simpleDocDto.updatedat = document.Updateat;
+                return simpleDocDto;
+            });
+            return {
+                data,
+                currentPage: page,
+                totalPages,
+                totaldata
+            };
+        } catch (error) {
+            throw new Error(`Error retrieving documents: ${error}`);
+        }
+    }
+
+
+    async getAllDocAndFolderby(parentId: string, name: string, createdBy: string, sortupdated: string, createdDate: Date, lastUpdate: Date, page: number = 1, limit: number = 10) {
+        const query: any = {};
+        limit = limit / 2
+        if (parentId && Types.ObjectId.isValid(parentId)) {
+            query.parentfolder = new Types.ObjectId(parentId);
+        } else if (!name) {
+            query.parentfolder = null;
+        }
+        if (createdBy && Types.ObjectId.isValid(createdBy)) {
+            query.createdby = new Types.ObjectId(createdBy);
+        }
+        if (createdDate) {
+            query.createat = {$gte: createdDate};
+        }
+        if (lastUpdate) {
+            query.Updateat = {$lte: lastUpdate};
+        }
+        if (name) {
+            query.foldername = {$regex: `^${name}`, $options: 'i'};
+        }
+
+        let folderResult = await this.folderrepo.findAllWithPagination(query, sortupdated, page, limit);
+        const data: SimpleDocDto[] = folderResult.data.map((folder: any) => {
+            const simplefolderDto: SimpleDocDto = new SimpleDocDto();
+            simplefolderDto.id = folder.id;
+            simplefolderDto.title = folder.foldername;
+            simplefolderDto.createdby = folder.createdby;
+            simplefolderDto.createdat = folder.createdat;
+            simplefolderDto.updatedat = folder.Updateat;
+            simplefolderDto.type = "folder"
+            return simplefolderDto;
+        });
+        if (name) {
+            query.title = {$regex: `^${name}`, $options: 'i'};
+            query.foldername = null
+        }
+        try {
+            let result = await this.documentRepository.findAllWithPagination(query, sortupdated, page, limit);
+            const totaldata = result.totaldata + folderResult.totaldata;
+
+            let totalPages = Math.ceil((totaldata) / limit * 2);
+            if (folderResult.data.length == 0) {
+                totalPages = Math.ceil((totaldata) / limit);
+            }
+
+            if (result.data.length == 0) {
+                totalPages = Math.ceil((totaldata) / limit);
+            }
+
+            result.data.map((document: any) => {
+                const simpleDocDto: SimpleDocDto = new SimpleDocDto();
+                simpleDocDto.id = document.id;
+                simpleDocDto.title = document.title;
+                simpleDocDto.createdby = document.createdby;
+                simpleDocDto.createdat = document.createat;
+                simpleDocDto.updatedat = document.Updateat;
+                data.push(simpleDocDto)
+                return simpleDocDto;
+            });
+            return {
+                data,
+                currentPage: page,
+                totalPages,
+                totaldata
+            };
+        } catch (error) {
+            throw new Error(`Error retrieving documents: ${error}`);
+        }
+    }
+
+    Deltealldocs(ids: string[]) {
+        return Promise.all(ids.map(async (id) => {
+            if (!mongoose.Types.ObjectId.isValid(id)) throw new HttpException('invalide ID', 400);
+            this.documentRepository.delete(id)
+        }));
+    }
 }

@@ -5,6 +5,8 @@ import { BaseAbstractRepository } from '../../../repositories/Base/base.abstract
 import { User,  } from 'src/Schema/User.Schema';
 import { DocumentRepositoryInterface } from "./document.repository.interface";
 import { Documents } from "../../../Schema/Documents.Schema";
+import {query} from "express";
+import {skip} from "rxjs";
 
 
 @Injectable()
@@ -19,6 +21,15 @@ export class DocumentRepository extends BaseAbstractRepository<Documents> implem
     const data = await this.documentsModel.find(query).skip(skip).limit(limit).sort({ Updateat: sortBy === 'asc' ? 1 : -1 }).exec();
     const totaldata = await this.documentsModel.countDocuments(query);
     return { data, totaldata };
+  }
+
+  async findSharedWithPagination(query, sortupdated, page, limit, sharedDocumentIds) {
+    const skip = (page - 1) * limit;
+    // momken fema erreur fi query
+    const data = await this.documentsModel.find({ $and: [{ _id: { $in: sharedDocumentIds } }, query] }).skip(skip).limit(limit).sort({ Updateat: sortupdated === 'asc' ? 1 : -1 }).exec();
+    const totaldata = await this.documentsModel.countDocuments(query);
+    return { data, totaldata };
+
   }
 
 
