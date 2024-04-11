@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MulterOptionsFactory, MulterModuleOptions } from '@nestjs/platform-express';
 import { GridFsStorage } from 'multer-gridfs-storage'; // Correct import for GridFsStorage
-import { DATA_BASE_CONFIGURATION } from '../Mongo';
+import { DATA_BASE_CONFIGURATION } from '../Mongo/Index';
 
 @Injectable()
 export class GridFsMulterConfigService implements MulterOptionsFactory {
