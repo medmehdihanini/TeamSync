@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { MongooseModule } from '@nestjs/mongoose';
 import mongoose from "mongoose";
-import { DATA_BASE_CONFIGURATION } from '.';
+import { DATA_BASE_CONFIGURATION } from './Index';
 
 
 @Module({
