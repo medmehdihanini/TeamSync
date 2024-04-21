@@ -129,6 +129,17 @@ export class UserService {
     }
   }
 
+  async deleteUserProfile(userId: string) {
+    try {
+      const deletedUser = await this.userModel.deleteOne({ userId: userId });
+
+        console.log('Deleted one user:', deletedUser);
+      
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  }
+  
   async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
     return this.userRe.update(userId, {
       twoFactorAuthenticationSecret: secret
@@ -161,6 +172,24 @@ export class UserService {
     const updatePicture = await this.userRe.update(userId, {profilePicture : ppid})
     return updatePicture;
   }
+
+  async updateUserData(userId: string, un: string, fn: string, ln: string) {
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+        throw new Error('User not found');
+    }
+    const parts = userDoc.username.split('#');
+    if (parts.length !== 2) {
+        throw new Error('Invalid username format');
+    }
+    console.log('parts',parts);
+    const newUsername = `${un}#${parts[1]}`; 
+
+    const updateData = await this.userRe.update(userId, { username: newUsername, firstname: fn, lastname: ln });
+    return updateData;
+}
+
+
 
   async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);

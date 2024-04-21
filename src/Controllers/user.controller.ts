@@ -24,6 +24,7 @@ export class UsersController {
     }
   }
 
+  @Public()
   @Delete('deleteuser/:id')
   async DeleteUser(@Param('id') id: string) {
     const isValid = mongoose.Types.ObjectId.isValid(id);
@@ -122,24 +123,18 @@ export class UsersController {
     }
   }
 
-  @Post(':id/update-name')
-  async updateUserFirstnameAndLastname(
-    @Param('id') id: string,
-    @Body('firstname') firstname: string,
-    @Body('lastname') lastname: string,
-  ) {
+  @Public()
+  @Post('update-user') // Define the POST endpoint
+  async updateDataUser(@Body() requestBody: { userId: string, un: string, fn: string, ln: string}) {
+    const { userId, un ,fn ,ln } = requestBody;
     try {
-      const updatedUser = await this.usersService.UpdateUser2(id, firstname, lastname);
-      if (updatedUser) {
-        return {
-          message: 'User firstname and lastname updated successfully',
-          user: updatedUser,
-        };
-      } else {
-        return { message: 'User not found' };
-      }
+      const updatedUser = await this.usersService.updateUserData(userId, un ,fn ,ln);
+      return { success: true, user: updatedUser };
     } catch (error) {
-      return { error: error.message };
+      return { success: false, error: error.message };
     }
   }
+
+
+  
 }
