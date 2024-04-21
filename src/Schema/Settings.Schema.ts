@@ -7,7 +7,6 @@ import { Role } from "./Enum/Role";
 
 @Schema()
 export class Settings extends Document{
-  @Prop({ required: false })
-  profilePicture: string; 
+
 }
 export const SettingsSchema = SchemaFactory.createForClass(Settings);
