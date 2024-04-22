@@ -79,6 +79,20 @@ async UpdateDoc(
   return this.docService.update(document) ;
 }
 
+@Public()
+@Post('clone')
+async addClonedDocument(@Body('newId') newId: string, @Body('id') id: string) {
+  try {
+    console.log('newId:', newId); // Log newId for troubleshooting
+    console.log('id:', id); // Log id for troubleshooting
+    // Pass newId and id to addDocumentWithContent
+    return this.docService.addDocumentWithContent(newId, id);
+  } catch (error) {
+    throw new Error(`Error cloning document with content: ${error.message}`);
+  }
+}
+
+
 
 
 }

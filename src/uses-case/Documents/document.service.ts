@@ -13,19 +13,21 @@ import { ContentService } from '../Content/content.service';
 import { SimpleFolderDto } from '../Folder/DTO/SimpleFolder.dto';
 import { SharedService } from 'src/shared/shared-service/shared.service';
 
+
 @Injectable()
 export class DocumentService {
 
 
-  constructor(
-              private documentRepository: DocumentRepository,
-              @InjectModel(User.name) private userModel: Model<User>,
-              @InjectModel(Documents.name) private Documentmodel: Model<Documents>, 
-              private sharedService: SharedService,
-              @InjectModel(Folder.name) private folderModel: Model<Folder>,
-              private userrepo:UserRepository,
-              private folderrepo:FolderRepository
-              ) {}
+    constructor(
+        private documentRepository: DocumentRepository,
+        @InjectModel(User.name) private userModel: Model<User>,
+        @InjectModel(Documents.name) private Documentmodel: Model<Documents>,
+        private sharedService: SharedService,
+        @InjectModel(Folder.name) private folderModel: Model<Folder>,
+        private userrepo: UserRepository,
+        private folderrepo: FolderRepository,
+        private contentService: ContentService,
+    ) { }
 
 
 
@@ -75,13 +77,13 @@ export class DocumentService {
             query.createdby = new Types.ObjectId(createdBy);
         }
         if (createdDate) {
-            query.createat = {$gte: createdDate};
+            query.createat = { $gte: createdDate };
         }
         if (lastUpdate) {
-            query.Updateat = {$lte: lastUpdate};
+            query.Updateat = { $lte: lastUpdate };
         }
         if (name) {
-            query.title = {$regex: `^${name}`, $options: 'i'};
+            query.title = { $regex: `^${name}`, $options: 'i' };
         }
         try {
             const result = await this.documentRepository.findAllWithPagination(query, sortupdated, page, limit);
@@ -120,13 +122,13 @@ export class DocumentService {
             query.createdby = new Types.ObjectId(createdBy);
         }
         if (createdDate) {
-            query.createat = {$gte: createdDate};
+            query.createat = { $gte: createdDate };
         }
         if (lastUpdate) {
-            query.Updateat = {$lte: lastUpdate};
+            query.Updateat = { $lte: lastUpdate };
         }
         if (name) {
-            query.foldername = {$regex: `^${name}`, $options: 'i'};
+            query.foldername = { $regex: `^${name}`, $options: 'i' };
         }
 
         let folderResult = await this.folderrepo.findAllWithPagination(query, sortupdated, page, limit);
@@ -141,7 +143,7 @@ export class DocumentService {
             return simplefolderDto;
         });
         if (name) {
-            query.title = {$regex: `^${name}`, $options: 'i'};
+            query.title = { $regex: `^${name}`, $options: 'i' };
             query.foldername = null
         }
         try {
@@ -184,4 +186,44 @@ export class DocumentService {
             this.documentRepository.delete(id)
         }));
     }
+
+   
+    async addDocumentWithContent(newId: string, cloneId: string) {
+        try {
+          console.log('newId:', newId); // Log newId for troubleshooting
+      
+          // Check if newId is empty before validation
+          if (!newId) {
+            throw new Error('newId cannot be empty');
+          }
+      
+          // Retrieve the content of the document identified by cloneId
+          const cloneDoc = await this.contentService.getAllByDoc(cloneId);
+      
+          // Check if cloneDoc is empty or null
+          if (!cloneDoc || cloneDoc.length === 0) {
+            throw new Error('No content found for the provided cloneId');
+          }
+      
+          // Create an ObjectId instance from newId
+          const objectId = new Types.ObjectId(newId);
+      
+          // Clone and update the documentid for each content item
+          const clonedContents = await Promise.all(cloneDoc.map(async contentItem => {
+            // Clone the content item and update its documentid attribute
+            const clonedContent = { ...contentItem.toObject(), _id: new Types.ObjectId(), documentid: objectId };
+            // Save the cloned content item to the database
+            return this.contentService.addContent(clonedContent);
+          }));
+      
+          console.log(clonedContents);
+          return clonedContents;
+        } catch (error) {
+          console.error('Error adding document with content:', error);
+          // Re-throw the original error for better context
+          throw error;
+        }
+      }
+      
+      
 }
