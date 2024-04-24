@@ -12,6 +12,7 @@ import { SimpleDocDto } from './DTO/SimpleDoc.dto';
 import { ContentService } from '../Content/content.service';
 import { SimpleFolderDto } from '../Folder/DTO/SimpleFolder.dto';
 import { SharedService } from 'src/shared/shared-service/shared.service';
+import { ObjectId } from 'mongodb';
 
 
 @Injectable()
@@ -34,7 +35,7 @@ export class DocumentService {
 
 
     async addDocument(document: Documents) {
-        document._id = null
+        document._id = new ObjectId();
         if (document.parentfolder != null) {
             if (Types.ObjectId.isValid(document.parentfolder.toString())) {
                 document.parentfolder = new Types.ObjectId(document.parentfolder).toString();
@@ -47,7 +48,8 @@ export class DocumentService {
             }
         }
         document.createdby = new Types.ObjectId(document.createdby).toString()
-        return this.documentRepository.create(document);
+        const createdoc = this.documentRepository.create(document)
+        return createdoc;
     }
 
     getOne(id: string) {
@@ -190,37 +192,23 @@ export class DocumentService {
    
     async addDocumentWithContent(newId: string, cloneId: string) {
         try {
-          console.log('newId:', newId); // Log newId for troubleshooting
-      
-          // Check if newId is empty before validation
+
           if (!newId) {
             throw new Error('newId cannot be empty');
           }
-      
-          // Retrieve the content of the document identified by cloneId
           const cloneDoc = await this.contentService.getAllByDoc(cloneId);
-      
-          // Check if cloneDoc is empty or null
           if (!cloneDoc || cloneDoc.length === 0) {
             throw new Error('No content found for the provided cloneId');
           }
-      
-          // Create an ObjectId instance from newId
           const objectId = new Types.ObjectId(newId);
-      
-          // Clone and update the documentid for each content item
           const clonedContents = await Promise.all(cloneDoc.map(async contentItem => {
-            // Clone the content item and update its documentid attribute
             const clonedContent = { ...contentItem.toObject(), _id: new Types.ObjectId(), documentid: objectId };
-            // Save the cloned content item to the database
             return this.contentService.addContent(clonedContent);
           }));
-      
-          console.log(clonedContents);
+
           return clonedContents;
         } catch (error) {
           console.error('Error adding document with content:', error);
-          // Re-throw the original error for better context
           throw error;
         }
       }
