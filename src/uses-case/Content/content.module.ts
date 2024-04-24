@@ -10,6 +10,7 @@ import { Content, ContentSchema } from 'src/Schema/Content';
 import { ContentRepository } from './Content-Repo/content.repository';
 import { ContentService } from './content.service';
 import { ContentController } from 'src/Controllers/Content.controller';
+import { WebsocketGateway } from './websocketGateway ';
 
 @Module({
   imports:[    MongooseModule.forFeature([{ name: Documents.name, schema: DocumentsSchema },
@@ -18,7 +19,7 @@ import { ContentController } from 'src/Controllers/Content.controller';
   
   ],
   controllers: [ContentController],
-  providers: [ContentService,UserRepository,FolderRepository,
+  providers: [WebsocketGateway,ContentService,UserRepository,FolderRepository,
     ContentRepository, {
     provide: 'ContentRepositoryInterface',
     useClass: ContentRepository

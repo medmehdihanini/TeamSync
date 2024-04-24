@@ -21,7 +21,7 @@ export class FileService {
       const db = client.db();
       this.fileModel = new MongoGridFS(db, 'fs');
     } catch (err) {
-      throw new HttpException('Failed to connect to MongoDB', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.log( new HttpException('Failed to connect to MongoDB', HttpStatus.INTERNAL_SERVER_ERROR));
     }
   }
 
