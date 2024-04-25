@@ -71,6 +71,12 @@ export class WebsocketGateway {
     if (position.room && this.rooms[position.room]) {
       const room = this.rooms[position.room];
       const user = room.users.find(user => user.id === client.id);
+      if(position.x==null ){
+       position.x=user.cursor.x;
+      }
+      if(position.y==null ){
+        position.y=user.cursor.y;
+       }
       if (user) {
         user.cursor = position;
         user.previousblockfocused=user.blockfocused;
@@ -82,14 +88,22 @@ export class WebsocketGateway {
 
 
   @SubscribeMessage('update')
-  handleupdate(client: Socket, messageData: { room: string; data: Content }): void {
+  handleupdate(client: Socket, messageData: { room: string; data: Content,index:number|null }): void {
     console.log("update", messageData);
-    const { room, data } = messageData;
-    client.to(room).emit('update', data);
+    const { room, data,index } = messageData;
+    client.to(room).emit('update', data,index);
     this.contentservice.UpdateContent(data);
-    console.log(`Message received in room ${room}: ${data}`);
   }
 
+
+  @SubscribeMessage('delete')
+  handledelete(client: Socket, messageData: { room: string; data: string[] }): void {
+    console.log("update", messageData);
+    const { room, data } = messageData;
+    client.to(room).emit('delete', data);
+    this.contentservice.Delteallcontent(data);
+    console.log(`Message received in room ${room}: ${data}`);
+  }
 
 
   handleDisconnect(client: Socket): void {
