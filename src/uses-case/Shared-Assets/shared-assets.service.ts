@@ -285,12 +285,13 @@ async getAcceslevelbyUser({Userid, docID, foldID}: findSharedDto) {
     const sharedAssets = await this.sharedModel.find({ userid: Userid, }).exec();
 
     if (docID) {
-        const sharedAsset = sharedAssets.find(asset => asset.docid._id == docID);
+        const sharedAsset = sharedAssets.find(asset => asset.docid == docID);
         if (sharedAsset) {
             return  sharedAsset.acceslevel;
         }
     } else if (foldID) {
-        const sharedAsset = sharedAssets.find(asset => asset.folderid._id == foldID);
+      console.log("foldID",foldID);
+        const sharedAsset = sharedAssets.find(asset => asset.folderid == foldID);
         if (sharedAsset) {
             return  sharedAsset.acceslevel;
         }
