@@ -2,7 +2,7 @@ import { Model, Document, model, Error, Promise } from "mongoose";
 import { BaseInterfaceRepository } from "./base.interface.repository";
 import { filter } from "rxjs";
 
-export abstract  class BaseAbstractRepository<T extends Document> implements  BaseInterfaceRepository<any>{
+export abstract class BaseAbstractRepository<T extends Document> implements BaseInterfaceRepository<any> {
   protected model: Model<T>;
 
   constructor(model: Model<T>) {
@@ -42,7 +42,13 @@ return await this.userService.getUsersByFilter(filter);
 
    */
 
-
+  async updateUserFirstnameAndLastname(id: string, firstname: string, lastname: string): Promise<T | null> {
+    const dataToUpdate = {
+      firstname: firstname,
+      lastname: lastname
+    };
+    return await this.model.findByIdAndUpdate(id, dataToUpdate, { new: true }).exec();
+  }
 
 
   async find(filter: any): Promise<T[]> {
@@ -53,7 +59,7 @@ return await this.userService.getUsersByFilter(filter);
     return await this.model.findByIdAndUpdate(id, data, { new: true }).exec();
   }
 
-  async delete(id: string): Promise<T|null> {
+  async delete(id: string): Promise<T | null> {
     const result = await this.model.findByIdAndDelete(id);
     return await result;
   }

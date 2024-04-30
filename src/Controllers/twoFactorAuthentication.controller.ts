@@ -30,11 +30,12 @@ export class TwoFactorAuthenticationController {
 
   @Public()
   @Post('generate')
-  async register(@Res() response: Response, @Req() request: RequestWithUser) {
-    const { otpauthUrl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(request.user);
-    return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);
+  async register(@Res() response: Response, @Body() requestBody: { email: string, id: string }){
+    const { email, id } = requestBody;
+    const { otpauthUrl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(email, id);
+    response.setHeader("content-type", "image/png");
+      return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);
   }
-
 
 
   @Public()
@@ -54,4 +55,16 @@ export class TwoFactorAuthenticationController {
 
     return { isAuthenticated: true };
   }
+
+  @Public()
+  @Post('turn-on-off')
+  @HttpCode(200)
+  async turnOnTwoFactorAuthentication(
+    @Body() requestBody: { id: string }
+  ): Promise<boolean> {
+    const { id } = requestBody;
+    // Call the service method to toggle the authentication status
+    return this.usersService.turnOnTwoFactorAuthentication(id);
+  }
+  
 }

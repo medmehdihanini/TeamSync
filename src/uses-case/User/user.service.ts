@@ -50,14 +50,23 @@ export class UserService {
       isEmailConfirmed: false,
       isTwoFactorAuthenticationEnabled:false,
       twoFactorAuthenticationSecret:'',
-      passResetToken:''
+      passResetToken:'',
+      profilePicture:'660036990442903a5ff041ff'
     });
 
+    const savedUser = await newuser.save();
+    const userSettings = new this.SettingsModel({
+      profilePicture: 'test.png', 
+    });
+    savedUser.settings = userSettings._id;
+    await savedUser.save();
+    await userSettings.save();
     console.log("Hash: ", hash);
     console.log("Are The Password and the hash are matched? : ", isMatch);
     console.log("The New User: ", newuser);
 
-    return await newuser.save();
+
+    return savedUser;
   }
 
   async loginUser(loginDto: LoginDto) {
@@ -95,6 +104,11 @@ export class UserService {
     return this.userRe.update(id, creatuserdto);
   }
 
+  UpdateUser2(id: string, firstname: string, lastname: string) {
+    return this.userRe.updateUserFirstnameAndLastname(id, firstname, lastname);
+  }
+
+
   async markEmailAsConfirmed(id: string) {
     return this.userRe.update(id, {
       isEmailConfirmed: true
@@ -116,17 +130,67 @@ export class UserService {
     }
   }
 
+  async deleteUserProfile(userId: string) {
+    try {
+      const deletedUser = await this.userModel.deleteOne({ userId: userId });
+
+        console.log('Deleted one user:', deletedUser);
+      
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  }
+  
   async setTwoFactorAuthenticationSecret(secret: string, userId: string) {
     return this.userRe.update(userId, {
       twoFactorAuthenticationSecret: secret
     });
   }
 
-  async turnOnTwoFactorAuthentication(userId: string) {
-    return this.userRe.update(userId, {
-      isTwoFactorAuthenticationEnabled: true
+  async turnOnTwoFactorAuthentication(userId: string): Promise<boolean> {
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+      throw new Error('User not found');
+    }
+  
+
+    const updatedValue = !userDoc.isTwoFactorAuthenticationEnabled;
+  
+
+    await this.userRe.update(userId, {
+      isTwoFactorAuthenticationEnabled: updatedValue
     });
+  
+
+    return updatedValue;
   }
+  
+  async updateUserProfilePicture(userId: string, ppid: string){
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+      throw new Error('User not found');
+    }
+    const updatePicture = await this.userRe.update(userId, {profilePicture : ppid})
+    return updatePicture;
+  }
+
+  async updateUserData(userId: string, un: string, fn: string, ln: string) {
+    const userDoc = await this.userRe.findById(userId);
+    if (!userDoc) {
+        throw new Error('User not found');
+    }
+    const parts = userDoc.username.split('#');
+    if (parts.length !== 2) {
+        throw new Error('Invalid username format');
+    }
+    console.log('parts',parts);
+    const newUsername = `${un}#${parts[1]}`; 
+
+    const updateData = await this.userRe.update(userId, { username: newUsername, firstname: fn, lastname: ln });
+    return updateData;
+}
+
+
 
   async setCurrentRefreshToken(refreshToken: string, userId: string) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);

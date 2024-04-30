@@ -5,6 +5,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './tokenPayload.interface';
+import { SettingsService } from '../Settings/settings.service';
+import { Settings } from 'src/Schema/Settings.Schema';
 
 
 @Injectable()
@@ -15,29 +17,6 @@ export class AuthService {
     private readonly configService: ConfigService
   ) { }
 
-  /*    async signIn(email: string, pass: string): Promise<{access_token: string}> {
-         const user = await this.userService.findUserByEmail(email);
-         console.log(user);
-         const isMatch = await bcrypt.compare(pass,user?.password);
-         if (!isMatch) {
-           throw new UnauthorizedException();
-         }
-         const payload = { sub: user.id, username: user.username };
-         return{access_token: await this.jwtService.signAsync(payload),};
-       } */
-
-  /*  async getUserFromToken(token: string) {
-     try {
-         const decoded = this.jwtService.verify(token);
-         const { sub: userId, username } = decoded;
-         // Fetch user data based on userId
-         const user = await this.userService.findUserById(userId);
-         return user;
-     } catch (error) {
-         throw new UnauthorizedException('Invalid token');
-     }
- } */
-
 
   async signIn(email: string, pass: string): Promise<{ 
     access_token: string, 
@@ -47,12 +26,10 @@ export class AuthService {
     username: string, 
     faSecret: string, 
     isTwoFactorAuthenticationEnabled:Boolean,
-    isEmailConfirmed:Boolean
+    isEmailConfirmed:Boolean,
+    profilePicture:string,
   }> {
     const user = await this.userService.findUserByEmail(email);
-/*     if (user.isTwoFactorAuthenticationEnabled) {
-      return;
-    } */
     const isMatch = await bcrypt.compare(pass, user?.password);
     if (!isMatch) {
       throw new UnauthorizedException();
@@ -67,7 +44,9 @@ export class AuthService {
       username:user.username,
       faSecret:user.twoFactorAuthenticationSecret,
       isTwoFactorAuthenticationEnabled : user.isTwoFactorAuthenticationEnabled,
-      isEmailConfirmed: user.isEmailConfirmed
+      isEmailConfirmed: user.isEmailConfirmed,
+      profilePicture:user.profilePicture,
+
     };
   }
 

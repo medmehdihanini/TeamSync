@@ -47,6 +47,9 @@ export class User extends Document {
   @Prop({ required: false })
   passResetToken: string;
 
+  @Prop({ required: false })
+  profilePicture: string; 
+
   // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }], default: [] })
   // folders?: Folder[];
 

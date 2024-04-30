@@ -14,10 +14,10 @@ export class TwoFactorAuthenticationService {
     private readonly configService: ConfigService,
   ) {}
  
-  public async generateTwoFactorAuthenticationSecret(user: User) {
+  public async generateTwoFactorAuthenticationSecret(email: string , id: string) {
     const secret = authenticator.generateSecret();
-    const otpauthUrl = authenticator.keyuri(user.email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'), secret);
-    await this.usersService.setTwoFactorAuthenticationSecret(secret, user.id.toString());
+    const otpauthUrl = authenticator.keyuri(email, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'), secret);
+    await this.usersService.setTwoFactorAuthenticationSecret(secret, id);
     return {
       secret,
       otpauthUrl
@@ -26,6 +26,8 @@ export class TwoFactorAuthenticationService {
   
 
   public async pipeQrCodeStream(stream: Response, otpauthUrl: string) {
+    console.log("otpauthUrl",otpauthUrl);
+    
     return toFileStream(stream, otpauthUrl);
   }
   
