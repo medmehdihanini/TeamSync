@@ -21,11 +21,11 @@ export class  SharedAssets extends Document{
 
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Documents' })
-  docid?: Documents;
+  docid?: string;
 
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' })
-  folderid?: Folder;
+  folderid?: string;
 
 }
 export const SharedAssetsSchema = SchemaFactory.createForClass(SharedAssets);

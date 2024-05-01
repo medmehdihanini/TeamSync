@@ -70,6 +70,7 @@ export class ContentService {
   }
 
   async decrementRange(id: string, endPos: number) {
+    console.log("yes working")
     const existingContent = await this.Contentrrepo.findById(id);
     if (existingContent.position > endPos) {
       await this.Contentrrepo.decrementRange(endPos, existingContent.position, 1);

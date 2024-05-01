@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { MongoGridFS } from 'mongo-gridfs';
 import { GridFSBucket, GridFSBucketReadStream, GridFSBucketWriteStream } from 'mongodb';
-import { DATA_BASE_CONFIGURATION } from 'src/Config/Mongo';
+import { DATA_BASE_CONFIGURATION } from 'src/Config/Mongo/Index';
 import { FileInfoVm } from './model/FileInfoVm ';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class FileService {
       const db = client.db();
       this.fileModel = new MongoGridFS(db, 'fs');
     } catch (err) {
-      throw new HttpException('Failed to connect to MongoDB', HttpStatus.INTERNAL_SERVER_ERROR);
+      console.log( new HttpException('Failed to connect to MongoDB', HttpStatus.INTERNAL_SERVER_ERROR));
     }
   }
 
