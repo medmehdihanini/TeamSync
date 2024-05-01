@@ -6,7 +6,7 @@ COPY package*.json ./
 
 COPY .env ./.env
 
-RUN npm ci --legacy-peer-deps
+RUN npm i --legacy-peer-deps
 
 COPY . .
 
