@@ -32,7 +32,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email);
     const isMatch = await bcrypt.compare(pass, user?.password);
     if (!isMatch) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid password');
     }
     const payload = { sub: user.id, username: user.username, email: user.email};
     console.log("od:",user.id , user.username, user.email)
