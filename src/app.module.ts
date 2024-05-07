@@ -56,7 +56,7 @@ import { OpenaiModule } from './uses-case/chatgpt/openai.module';
     }),
     ScheduleModule.forRoot(),
     FilesModule,
-    DesignContentModule
+    DesignContentModule,
   ],
   controllers: [],
   providers: [

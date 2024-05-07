@@ -1,8 +1,9 @@
-import {Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query, Redirect} from "@nestjs/common";
+import {Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Redirect} from "@nestjs/common";
 import { Public } from "../Custom Decorators/public.decorator";
 import { SharedAssetsService } from "../uses-case/Shared-Assets/shared-assets.service";
 import { createSharedDto } from "../uses-case/Shared-Assets/DTO/CreateShared.dto";
 import { findSharedDto } from "../uses-case/Shared-Assets/DTO/findSharedAssets.dto";
+import {updateSharedDto} from "../uses-case/Shared-Assets/DTO/updateShared.dto";
 
 @Controller("SharedAssets")
 export class SharedAssetsController {
@@ -69,6 +70,28 @@ export class SharedAssetsController {
     return this.SharedAssetsService.getAcceslevelbyUser(findAccesLevler);
   }
 
+
+@Public()
+  @Patch("update")
+  updateSharedAssets( @Body() updateSharedAssets: updateSharedDto)
+{
+  return this.SharedAssetsService.updateacceslevelbyUser(updateSharedAssets);
+}
+
+@Public()
+  @Post("folderanddcoumentbyuser")
+  getFolderandDocbyUser(@Body() findsharedassets: findSharedDto)
+{
+  return this.SharedAssetsService.findsfolderanddocbyUser(findsharedassets);
+}
+
+
+  @Public()
+  @Post("findfolderbyuser")
+  findfolderbyUser(@Body() findsharedassets: findSharedDto)
+  {
+    return this.SharedAssetsService.findfolderbyUser(findsharedassets);
+  }
 
 
 }

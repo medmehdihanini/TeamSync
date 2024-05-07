@@ -6,7 +6,8 @@ export class updateSharedDto{
   acceslevel: AccesLevel;
 
   @IsOptional()
-  Userid: string[];
+  userID: string
+
 
   @IsOptional()
   foldID:string
