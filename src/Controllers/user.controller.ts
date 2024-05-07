@@ -112,7 +112,7 @@ export class UsersController {
   }
 
   @Public()
-  @Post('update-profile-picture') // Define the POST endpoint
+  @Post('update-profile-picture') 
   async updateProfilePicture(@Body() requestBody: { userId: string, profilePictureId: string }) {
     const { userId, profilePictureId } = requestBody;
     try {
@@ -124,7 +124,7 @@ export class UsersController {
   }
 
   @Public()
-  @Post('update-user') // Define the POST endpoint
+  @Post('update-user') 
   async updateDataUser(@Body() requestBody: { userId: string, un: string, fn: string, ln: string}) {
     const { userId, un ,fn ,ln } = requestBody;
     try {
