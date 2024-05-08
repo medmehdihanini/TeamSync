@@ -51,7 +51,7 @@ export class UserService {
       isTwoFactorAuthenticationEnabled:false,
       twoFactorAuthenticationSecret:'',
       passResetToken:'',
-      profilePicture:'660036990442903a5ff041ff'
+      profilePicture:'663add840506bd0b8eee6eec'
     });
 
     const savedUser = await newuser.save();
